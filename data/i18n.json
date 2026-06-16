@@ -1,0 +1,1235 @@
+{
+  "_langs": [
+    "en",
+    "de",
+    "fr",
+    "it",
+    "rm"
+  ],
+  "_names": {
+    "en": "EN",
+    "de": "DE",
+    "fr": "FR",
+    "it": "IT",
+    "rm": "RM"
+  },
+  "en": {
+    "nav": {
+      "map": "Map",
+      "correlates": "Correlates",
+      "fit": "Fit",
+      "anomalies": "Anomalies",
+      "data": "Data"
+    },
+    "hero": {
+      "kicker": "Federal referendum · 14 June 2026",
+      "title": "A Switzerland of only ten million?",
+      "sub": "— who voted Yes, and what goes with it.",
+      "lede": "The federal popular initiative <em>“No 10-million Switzerland” (the sustainability initiative)</em> would have capped Switzerland's permanent population at ten million by tightening immigration. Voters <strong>rejected</strong> it (45.2 % Yes). We map the Yes share across <strong>every Swiss commune</strong> and measure what it <strong>correlates</strong> with — support was higher in rural, agricultural, Catholic and higher-foreign-share communes, and lower in large, dense, secular, service-economy cities, atop a strong regional gradient (Italian-speaking Ticino most in favour).",
+      "disclaimer": "This is a <strong>correlational, ecological analysis</strong> at the commune level. It describes which place-level features move together with the vote — not why individuals voted, and not cause and effect."
+    },
+    "bento": {
+      "result_label": "National result — Rejected",
+      "no": "No",
+      "yes": "Yes",
+      "result_foot": "Share of valid votes · whole of Switzerland",
+      "communes": "Communes",
+      "communes_foot": "Political communes †",
+      "variance": "Variance explained",
+      "variance_foot": "Spatial-error model",
+      "correlate": "Strongest correlate",
+      "correlate_val": "Urban scale",
+      "correlate_foot": "Population & density ↔ less Yes",
+      "footnote": "† 2,105 of the 2,110 political communes (1 Jan 2026). Five small communes in canton Bern — Meienried, Hellsau, Deisswil b. Münchenbuchsee, Oberhünigen and Niedermuhlern — report their federal-vote results jointly with a neighbour, so they are counted but not listed separately. Full territorial and voter coverage."
+    },
+    "rationale": {
+      "head": "How to read this",
+      "p1": "The <strong>outcome</strong> is each commune's Yes share. We relate it to socio-demographic, linguistic, land-use and urban-form variables, all from official federal open data, joined on the BFS commune number.",
+      "p2": "Swiss votes are <strong>spatially structured</strong> — neighbouring communes vote alike. We use a <strong>spatial-error model</strong> on the logit of the Yes share, weighted by votes, which absorbs the regional gradient (the <em>Röstigraben</em>) so the associations are not artefacts of geography.",
+      "p3": "Coefficients are <strong>standardised</strong>: each is the change in the vote associated with a one-standard-deviation difference in that variable, holding the others fixed. They are <strong>associations, not causes</strong>. Select any variable on the map to read what it measures.",
+      "spec_head": "The model, precisely",
+      "def_type": "<strong>Type</strong> — a spatial-error regression (SEM), fitted by maximum likelihood: a linear model with a spatially correlated error term.",
+      "def_outcome": "<strong>Outcome</strong> (Yesᵢ) — the logit of each commune's Yes share, log(p/(1−p)); the logit linearises the bounded 0–100% share.",
+      "def_weights": "<strong>Weighting</strong> — each commune is weighted by its number of valid votes, so cities count proportionally and tiny communes don't dominate.",
+      "def_spatial": "<strong>Spatial term</strong> — uᵢ = λ·Σⱼ wᵢⱼ uⱼ + εᵢ, with W the row-standardised queen-contiguity neighbour matrix; λ ≈ 0.74 measures how strongly neighbouring residuals move together, absorbing the regional gradient (the Röstigraben).",
+      "def_coef": "<strong>Coefficients</strong> (βₖ) — predictors are standardised, so each β is the change in the logit Yes share for a one-standard-deviation difference, the others held constant. Associations, not causes.",
+      "formula": "logit(Yesᵢ) = β₀ + Σₖ βₖ·z(xₖᵢ) + γ·langᵢ + uᵢ        uᵢ = λ Σⱼ wᵢⱼ uⱼ + εᵢ"
+    },
+    "map": {
+      "head": "The geography of the vote",
+      "note": "Each commune coloured by the selected variable. Click a commune to pin it; click empty space to clear. Geometry: generalised boundaries, Swiss LV95.",
+      "readout_hint": "Hover or click a commune for its full profile."
+    },
+    "assoc": {
+      "head": "What the Yes share correlates with",
+      "note": "Standardised association with the Yes share (logit, per 1 SD), spatial-error model, no party variables. Bars left of zero go with a lower Yes share; right, higher. These are correlations, not causal effects.",
+      "caption": "*** p<0.001 · ** p<0.01 · * p<0.05 · n.s. not significant. The foreign-resident association is ecological — foreigners cannot vote federally, so it reflects how the citizen electorate of more-diverse communes voted."
+    },
+    "fit": {
+      "head": "How well it fits",
+      "note": "Left: one point per commune. Switch the x-axis between the model's prediction and each explanatory variable to see how the Yes share relates to it. Click a dot to identify the commune. Right: cumulative variance explained as variable blocks are added.",
+      "twocol1": "A model built <strong>only</strong> from the 72-category land-use data reaches a cross-validated R² of <strong>0.36</strong> — a meaningful but partial correlate of the urban–rural structure.",
+      "twocol2": "Population and density together account for most of the explained variance; the spatial-error term (λ = 0.73) lifts the pseudo-R² to <strong>0.84</strong> by absorbing the regional gradient."
+    },
+    "scatter": {
+      "model_prediction": "Model prediction",
+      "langregions": "Language regions:",
+      "label_cities": "Label cities",
+      "yaxis": "Observed Yes (%)",
+      "xaxis_pred": "Predicted Yes (%)",
+      "cap_overall": "black line = Switzerland overall",
+      "cap_lang": "coloured = OLS per language with 95% CI band",
+      "cap_diag": "grey dashed = perfect prediction",
+      "cap_slope": "slope",
+      "cap_communes": "communes",
+      "readout_hint": "Hover or click a dot to identify the commune.",
+      "raw": "Raw",
+      "adjusted": "Adjusted for other variables",
+      "adj_suffix": "(adjusted)",
+      "adj_caption": "Added-variable plot, vote-weighted (to match the model). Both axes are residualised on the other variables; the slope equals this variable's coefficient in the full model. For foreign residents: raw −0.34 → weighted-adjusted ≈ +0.14 → spatial-error model +0.16 — positive and robust across specifications."
+    },
+    "readout": {
+      "yes_share": "Yes share",
+      "predicted_yes": "Predicted Yes",
+      "residual": "Residual",
+      "population": "Population",
+      "density": "Density / km²",
+      "foreign": "Foreign residents",
+      "agricultural": "Agricultural land",
+      "turnout": "Turnout",
+      "pts": "pts",
+      "pinned": "pinned"
+    },
+    "anomalies": {
+      "head": "Anomalies — where the model misses",
+      "note_a": "The residual is observed minus predicted Yes share. It flags communes that voted differently from what their structural profile predicts. Select",
+      "note_b": "on the map to see them in space.",
+      "resid_btn": "Model residual",
+      "pos_head": "Voted Yes more than expected",
+      "neg_head": "Voted No more than expected",
+      "caption": "Large residuals tend to be small, rural communes with idiosyncratic local politics (religion, language minorities, single dominant employers) that commune-level structural variables cannot capture.",
+      "th_commune": "Commune",
+      "th_canton": "Canton",
+      "th_yes": "Yes",
+      "th_resid": "Resid."
+    },
+    "sources": {
+      "head": "Data sources",
+      "note": "All official Swiss federal open data, joined on the BFS commune number.",
+      "items": [
+        {
+          "name": "Federal vote results",
+          "org": "Federal Statistical Office (eCH-0252 feed)",
+          "detail": "Commune-level Yes/No, turnout — 14 June 2026"
+        },
+        {
+          "name": "Population (STATPOP)",
+          "org": "FSO",
+          "detail": "Population, density, % foreign, mean age, growth"
+        },
+        {
+          "name": "Land use (Arealstatistik)",
+          "org": "FSO",
+          "detail": "72-category land cover/use, 1 ha grid"
+        },
+        {
+          "name": "Language",
+          "org": "Federal Census",
+          "detail": "Dominant language per commune"
+        },
+        {
+          "name": "Boundaries",
+          "org": "swisstopo / FSO",
+          "detail": "Generalised commune geometry, LV95"
+        }
+      ]
+    },
+    "r2": {
+      "head": "Cumulative R² by variable block",
+      "blocks": [
+        "Language (Röstigraben)",
+        "+ Size & density",
+        "+ % foreign",
+        "+ Agricultural land",
+        "+ Urban form (sprawl)",
+        "+ Age & growth"
+      ],
+      "spatial": "+ Spatial-error term"
+    },
+    "footer": {
+      "line1": "Commune-level correlational analysis · Swiss referendum 14 June 2026",
+      "by": "Analysis & site by"
+    },
+    "langnames": {
+      "de": "German",
+      "fr": "French",
+      "it": "Italian",
+      "rm": "Romansh"
+    },
+    "variables": {
+      "init10mio_yes_pct": {
+        "label": "Yes share (%)",
+        "desc": "Share of valid votes for the initiative — the outcome being explained. Blue communes leaned Yes, red leaned No."
+      },
+      "density_per_km2": {
+        "label": "Density (inhab/km²)",
+        "desc": "Permanent residents per km². Denser communes are associated with a LOWER Yes share — Switzerland's urban cores leaned No."
+      },
+      "pop_2024": {
+        "label": "Population",
+        "desc": "Total permanent residents. Larger communes are associated with a lower Yes share, over and above density — a separate size effect."
+      },
+      "pct_foreign_2024": {
+        "label": "Foreign residents (%)",
+        "desc": "Share of non-Swiss residents. The RAW slope is NEGATIVE (more foreigners ↔ less Yes; foreigners concentrate in cities, which voted No), but that is confounded by urban scale. Once the other variables are controlled AND observations are weighted by votes, the association is POSITIVE (≈ +0.14), and +0.16 in the spatial-error model — positive and robust across specifications (a confounding / Simpson's-paradox pattern). Ecological: foreigners cannot vote federally."
+      },
+      "pct_agriculture": {
+        "label": "Agricultural land (%)",
+        "desc": "Share of commune area used for agriculture. Positively associated with Yes — the one land-use dimension independent of density."
+      },
+      "sprawl_logratio": {
+        "label": "Sprawl  log(SF/MF)",
+        "desc": "Log-ratio of single-family to multi-family housing area. Higher = more suburban. Weakly but robustly associated with a higher Yes share."
+      },
+      "model_residual": {
+        "label": "Model residual (anomaly)",
+        "desc": "Observed minus predicted Yes share (points). BLUE = voted MORE Yes than the model expects, RED = more No. Large values mark places the structural variables miss."
+      },
+      "tertiary_share": {
+        "label": "Service-job share (%)",
+        "desc": "Share of jobs in the tertiary (service) sector (STATENT 2023). Service-economy communes lean No."
+      },
+      "pct_catholic_2000": {
+        "label": "Catholic (%)",
+        "desc": "Roman-Catholic share (2000 census, harmonised to 2026 boundaries via the BFS merger table). Catholic communes lean Yes."
+      },
+      "pct_noreligion_2000": {
+        "label": "No religion (%)",
+        "desc": "Share with no religious affiliation (2000 census, harmonised). Secular communes lean No — one of the stronger new correlates."
+      },
+      "vacancy_rate_2019": {
+        "label": "Vacancy rate (%)",
+        "desc": "Share of vacant dwellings (2019). Weakly associated with a higher Yes share."
+      },
+      "jobs_per_1000": {
+        "label": "Jobs / 1,000 residents",
+        "desc": "Jobs at workplace per 1,000 residents (STATENT 2023) — employment-centre intensity. Employment centres lean slightly No."
+      }
+    },
+    "drivers": {
+      "pop_log": {
+        "label": "Total population (log)",
+        "explain": "Larger communes are associated with a lower Yes share, independently of density. Cities and large towns were the firmest No. Population scale captures urbanity beyond crowding — economic centrality and exposure to diversity. One of the two strongest correlates."
+      },
+      "density_log": {
+        "label": "Population density (log)",
+        "explain": "Denser communes are associated with a lower Yes share — urban cores opposed it most, the rural periphery least. With total population, density forms the dominant urban-scale axis that accounts for most of the explained variance."
+      },
+      "pct_foreign": {
+        "label": "Foreign residents",
+        "explain": "Watch the sign — a confounding (Simpson-style) pattern. RAW it is NEGATIVE (more foreigners ↔ less Yes; they concentrate in cities, which voted No). Once the other variables are controlled AND observations are weighted by votes, the partial association is POSITIVE (≈ +0.14); the spatial-error model gives +0.16. A robustness battery (spatial-error, Durbin, alternative neighbour weights, spatial-binomial) keeps it positive in every weighted/spatial specification (+0.06 to +0.16) — small but stable, not sign-flipping. Ecological: foreigners cannot vote federally, so it describes how the resident citizens voted."
+      },
+      "pct_agriculture": {
+        "label": "Agricultural land",
+        "explain": "More agricultural land goes with a higher Yes share, over and above population and density. It is the one land-use signal that survives spatial modelling because it is uncorrelated with density, capturing rural-agrarian character the population variables miss."
+      },
+      "sprawl": {
+        "label": "Sprawl (single- vs multi-family)",
+        "explain": "Log(single-family ÷ multi-family housing area). Net of density it is weakly but robustly associated with a higher Yes share: suburban single-family communes lean slightly more Yes than compact ones. The raw single-family share would only re-measure density; the log-ratio isolates form from intensity."
+      },
+      "lang_it": {
+        "label": "Italian-speaking (vs German)",
+        "explain": "Italian-speaking communes — Ticino and the Italian Grisons — show a markedly higher Yes share than similar German-speaking ones, even after everything else and the spatial term. The largest categorical association — a distinct regional political culture on immigration."
+      },
+      "lang_fr": {
+        "label": "French-speaking (vs German)",
+        "explain": "French-speaking communes are associated with a somewhat lower Yes share than comparable German-speaking ones. Most of the Röstigraben is a smooth spatial gradient absorbed by the spatial-error term; this modest negative residual is what remains as a discrete language effect."
+      },
+      "avg_age": {
+        "label": "Mean age",
+        "explain": "Not significant once population, density and land use are included. In simpler models age looked relevant, but that was a proxy for commune size and structure; with those controlled it carries no independent association."
+      },
+      "growth": {
+        "label": "Population growth 2010–24",
+        "explain": "Not significant in the full model. After total population, density and land use are included, growth adds nothing — it was standing in for commune size and urban structure rather than carrying its own signal."
+      },
+      "jobs": {
+        "label": "Jobs per resident",
+        "explain": "Jobs at workplace per resident (employment-centre intensity). Net of the rest, employment centres lean slightly No (−0.04)."
+      },
+      "tertiary": {
+        "label": "Service-job share",
+        "explain": "Share of tertiary-sector jobs. Service-economy communes lean No (−0.09) — a modern/urban axis distinct from raw density."
+      },
+      "catholic": {
+        "label": "Catholic share (2000)",
+        "explain": "Roman-Catholic share (2000 census, harmonised to current boundaries). Catholic communes lean Yes (+0.04 in the full model, +0.10 alone). A classic Swiss vote axis."
+      },
+      "noreligion": {
+        "label": "No-religion share (2000)",
+        "explain": "Share with no religious affiliation. Secular communes lean No (−0.10) — among the stronger new correlates, partly overlapping urbanity but with independent signal (low VIF)."
+      },
+      "vacancy": {
+        "label": "Vacancy rate",
+        "explain": "Share of vacant dwellings (2019). Weakly associated with more Yes (+0.02) — looser/rural housing markets."
+      },
+      "lang_rm": {
+        "label": "Romansh-speaking (vs German)",
+        "explain": "Romansh-speaking communes (Grisons) — very few (~12). Associated with a lower Yes share than comparable German-speaking ones (−0.27), but with so few communes the estimate is uncertain."
+      }
+    }
+  },
+  "de": {
+    "nav": {
+      "map": "Karte",
+      "correlates": "Korrelate",
+      "fit": "Anpassung",
+      "anomalies": "Anomalien",
+      "data": "Daten"
+    },
+    "hero": {
+      "kicker": "Eidgenössische Abstimmung · 14. Juni 2026",
+      "title": "Eine Schweiz mit nur zehn Millionen?",
+      "sub": "— wer Ja stimmte, und was damit einhergeht.",
+      "lede": "Die eidgenössische Volksinitiative <em>« Keine 10-Millionen-Schweiz! » (Nachhaltigkeitsinitiative)</em> wollte die ständige Wohnbevölkerung der Schweiz durch strengere Zuwanderung auf zehn Millionen begrenzen. Die Stimmbevölkerung <strong>lehnte</strong> sie ab (45,2 % Ja). Wir kartieren den Ja-Anteil über <strong>jede Schweizer Gemeinde</strong> und messen, womit er <strong>korreliert</strong> — höhere Zustimmung in ländlichen, landwirtschaftlichen, katholischen und ausländerreicheren Gemeinden, geringere in grossen, dichten, säkularen Dienstleistungsstädten, über einem starken regionalen Gefälle (das italienischsprachige Tessin am stärksten dafür).",
+      "disclaimer": "Dies ist eine <strong>korrelative, ökologische Analyse</strong> auf Gemeindeebene. Sie beschreibt, welche Ortsmerkmale mit dem Abstimmungsergebnis einhergehen — nicht, warum Einzelne stimmten, und keine Ursache-Wirkung."
+    },
+    "bento": {
+      "result_label": "Gesamtresultat — Abgelehnt",
+      "no": "Nein",
+      "yes": "Ja",
+      "result_foot": "Anteil gültiger Stimmen · gesamte Schweiz",
+      "communes": "Gemeinden",
+      "communes_foot": "Politische Gemeinden †",
+      "variance": "Erklärte Varianz",
+      "variance_foot": "Räumliches Fehlermodell",
+      "correlate": "Stärkstes Korrelat",
+      "correlate_val": "Städtische Grösse",
+      "correlate_foot": "Bevölkerung & Dichte ↔ weniger Ja",
+      "footnote": "† 2.105 der 2.110 politischen Gemeinden (1.1.2026). Fünf kleine Berner Gemeinden — Meienried, Hellsau, Deisswil b. Münchenbuchsee, Oberhünigen und Niedermuhlern — melden ihre eidgenössischen Resultate gemeinsam mit einer Nachbargemeinde; sie sind mitgezählt, aber nicht separat aufgeführt. Vollständige Gebiets- und Stimmenabdeckung."
+    },
+    "rationale": {
+      "head": "So liest man dies",
+      "p1": "Die <strong>Zielgrösse</strong> ist der Ja-Anteil jeder Gemeinde. Wir setzen ihn in Beziehung zu soziodemografischen, sprachlichen, Bodennutzungs- und Siedlungsform-Variablen, alle aus amtlichen offenen Bundesdaten, verknüpft über die BFS-Gemeindenummer.",
+      "p2": "Schweizer Abstimmungen sind <strong>räumlich strukturiert</strong> — Nachbargemeinden stimmen ähnlich. Wir verwenden ein <strong>räumliches Fehlermodell</strong> auf dem Logit des Ja-Anteils, gewichtet nach Stimmen, das den regionalen Gradienten (den <em>Röstigraben</em>) absorbiert, sodass die Zusammenhänge keine geografischen Artefakte sind.",
+      "p3": "Die Koeffizienten sind <strong>standardisiert</strong>: jeder ist die Veränderung des Resultats, die mit einer Differenz von einer Standardabweichung dieser Variable einhergeht, bei konstant gehaltenen übrigen. Es sind <strong>Zusammenhänge, keine Ursachen</strong>. Wähle eine Variable auf der Karte, um zu sehen, was sie misst.",
+      "spec_head": "Das Modell, genau",
+      "def_type": "<strong>Typ</strong> — eine räumliche Fehler-Regression (SEM), per Maximum-Likelihood geschätzt: ein lineares Modell mit räumlich korreliertem Fehlerterm.",
+      "def_outcome": "<strong>Zielgrösse</strong> (Yesᵢ) — der Logit des Ja-Anteils jeder Gemeinde, log(p/(1−p)); der Logit linearisiert den begrenzten 0–100%-Anteil.",
+      "def_weights": "<strong>Gewichtung</strong> — jede Gemeinde wird mit ihrer Zahl gültiger Stimmen gewichtet, damit Städte proportional zählen und Kleinstgemeinden nicht dominieren.",
+      "def_spatial": "<strong>Räumlicher Term</strong> — uᵢ = λ·Σⱼ wᵢⱼ uⱼ + εᵢ, mit W als zeilenstandardisierter Nachbarschaftsmatrix (Damenkontiguität); λ ≈ 0,74 misst, wie stark benachbarte Residuen zusammenhängen, und absorbiert den regionalen Gradienten (Röstigraben).",
+      "def_coef": "<strong>Koeffizienten</strong> (βₖ) — die Prädiktoren sind standardisiert, jeder β ist also die Änderung des Logit-Ja-Anteils bei einer Differenz von einer Standardabweichung, die übrigen konstant. Zusammenhänge, keine Ursachen.",
+      "formula": "logit(Yesᵢ) = β₀ + Σₖ βₖ·z(xₖᵢ) + γ·langᵢ + uᵢ        uᵢ = λ Σⱼ wᵢⱼ uⱼ + εᵢ"
+    },
+    "map": {
+      "head": "Die Geografie der Abstimmung",
+      "note": "Jede Gemeinde nach der gewählten Variable eingefärbt. Klick auf eine Gemeinde fixiert sie; Klick ins Leere hebt die Auswahl auf. Geometrie: generalisierte Grenzen, Schweizer LV95.",
+      "readout_hint": "Über eine Gemeinde fahren oder klicken für das vollständige Profil."
+    },
+    "assoc": {
+      "head": "Womit der Ja-Anteil korreliert",
+      "note": "Standardisierter Zusammenhang mit dem Ja-Anteil (Logit, pro 1 SD), räumliches Fehlermodell, ohne Parteivariablen. Balken links der Null gehen mit weniger Ja einher, rechts mit mehr. Es sind Korrelationen, keine Kausaleffekte.",
+      "caption": "*** p<0.001 · ** p<0.01 · * p<0.05 · n.s. nicht signifikant. Der Zusammenhang mit dem Ausländeranteil ist ökologisch — Ausländer:innen stimmen auf Bundesebene nicht, er spiegelt also das Verhalten der stimmberechtigten Bevölkerung vielfältigerer Gemeinden."
+    },
+    "fit": {
+      "head": "Wie gut es passt",
+      "note": "Links: ein Punkt pro Gemeinde. Wechsle die x-Achse zwischen der Modellvorhersage und jeder erklärenden Variable, um den Zusammenhang mit dem Ja-Anteil zu sehen. Klick auf einen Punkt identifiziert die Gemeinde. Rechts: kumulierte erklärte Varianz beim Hinzufügen von Variablenblöcken.",
+      "twocol1": "Ein Modell <strong>nur</strong> aus den 72 Bodennutzungskategorien erreicht ein kreuzvalidiertes R² von <strong>0,36</strong> — ein bedeutsames, aber partielles Korrelat der Stadt-Land-Struktur.",
+      "twocol2": "Bevölkerung und Dichte erklären den Grossteil der Varianz; der räumliche Fehlerterm (λ = 0,73) hebt das Pseudo-R² auf <strong>0,84</strong>, indem er den regionalen Gradienten absorbiert."
+    },
+    "scatter": {
+      "model_prediction": "Modellvorhersage",
+      "langregions": "Sprachregionen:",
+      "label_cities": "Städte beschriften",
+      "yaxis": "Beobachtetes Ja (%)",
+      "xaxis_pred": "Vorhergesagtes Ja (%)",
+      "cap_overall": "schwarze Linie = Schweiz gesamt",
+      "cap_lang": "farbig = OLS je Sprache mit 95%-KI-Band",
+      "cap_diag": "grau gestrichelt = perfekte Vorhersage",
+      "cap_slope": "Steigung",
+      "cap_communes": "Gemeinden",
+      "readout_hint": "Über einen Punkt fahren oder klicken, um die Gemeinde zu identifizieren.",
+      "raw": "Roh",
+      "adjusted": "Bereinigt um andere Variablen",
+      "adj_suffix": "(bereinigt)",
+      "adj_caption": "Added-Variable-Plot, stimmengewichtet (passend zum Modell). Beide Achsen sind um die übrigen Variablen bereinigt; die Steigung entspricht dem Koeffizienten im vollen Modell. Beim Ausländeranteil: roh −0,34 → gewichtet-bereinigt ≈ +0,14 → räumliches Fehlermodell +0,16 — positiv und robust über die Spezifikationen."
+    },
+    "readout": {
+      "yes_share": "Ja-Anteil",
+      "predicted_yes": "Vorhergesagtes Ja",
+      "residual": "Residuum",
+      "population": "Bevölkerung",
+      "density": "Dichte / km²",
+      "foreign": "Ausländeranteil",
+      "agricultural": "Landwirtschaftsfläche",
+      "turnout": "Beteiligung",
+      "pts": "Pkt.",
+      "pinned": "fixiert"
+    },
+    "anomalies": {
+      "head": "Anomalien — wo das Modell danebenliegt",
+      "note_a": "Das Residuum ist beobachtetes minus vorhergesagtes Ja. Es markiert Gemeinden, die anders stimmten als ihr Strukturprofil erwarten liesse. Wähle",
+      "note_b": "auf der Karte, um sie räumlich zu sehen.",
+      "resid_btn": "Modellresiduum",
+      "pos_head": "Mehr Ja als erwartet",
+      "neg_head": "Mehr Nein als erwartet",
+      "caption": "Grosse Residuen sind meist kleine, ländliche Gemeinden mit eigenwilliger Lokalpolitik (Religion, Sprachminderheiten, einzelner dominanter Arbeitgeber), die Strukturvariablen auf Gemeindeebene nicht erfassen.",
+      "th_commune": "Gemeinde",
+      "th_canton": "Kanton",
+      "th_yes": "Ja",
+      "th_resid": "Resid."
+    },
+    "sources": {
+      "head": "Datenquellen",
+      "note": "Alle amtlichen offenen Bundesdaten, verknüpft über die BFS-Gemeindenummer.",
+      "items": [
+        {
+          "name": "Abstimmungsresultate",
+          "org": "Bundesamt für Statistik (eCH-0252)",
+          "detail": "Ja/Nein und Beteiligung je Gemeinde — 14. Juni 2026"
+        },
+        {
+          "name": "Bevölkerung (STATPOP)",
+          "org": "BFS",
+          "detail": "Bevölkerung, Dichte, Ausländeranteil, Durchschnittsalter, Wachstum"
+        },
+        {
+          "name": "Bodennutzung (Arealstatistik)",
+          "org": "BFS",
+          "detail": "72 Kategorien Bodenbedeckung/-nutzung, 1-ha-Raster"
+        },
+        {
+          "name": "Sprache",
+          "org": "Eidg. Volkszählung",
+          "detail": "Hauptsprache je Gemeinde"
+        },
+        {
+          "name": "Grenzen",
+          "org": "swisstopo / BFS",
+          "detail": "Generalisierte Gemeindegeometrie, LV95"
+        }
+      ]
+    },
+    "r2": {
+      "head": "Kumuliertes R² nach Variablenblock",
+      "blocks": [
+        "Sprache (Röstigraben)",
+        "+ Grösse & Dichte",
+        "+ % Ausländer",
+        "+ Landwirtschaftsfläche",
+        "+ Siedlungsform (Zersiedelung)",
+        "+ Alter & Wachstum"
+      ],
+      "spatial": "+ Räumlicher Fehlerterm"
+    },
+    "footer": {
+      "line1": "Korrelative Analyse auf Gemeindeebene · Eidg. Abstimmung 14. Juni 2026",
+      "by": "Analyse & Website von"
+    },
+    "langnames": {
+      "de": "Deutsch",
+      "fr": "Französisch",
+      "it": "Italienisch",
+      "rm": "Rätoromanisch"
+    },
+    "variables": {
+      "init10mio_yes_pct": {
+        "label": "Ja-Anteil (%)",
+        "desc": "Anteil gültiger Stimmen für die Initiative — die erklärte Zielgrösse. Blaue Gemeinden tendierten zu Ja, rote zu Nein."
+      },
+      "density_per_km2": {
+        "label": "Dichte (Einw./km²)",
+        "desc": "Ständige Wohnbevölkerung pro km². Dichtere Gemeinden gehen mit einem NIEDRIGEREN Ja-Anteil einher — die städtischen Zentren stimmten Nein."
+      },
+      "pop_2024": {
+        "label": "Bevölkerung",
+        "desc": "Ständige Wohnbevölkerung gesamt. Grössere Gemeinden gehen mit weniger Ja einher, zusätzlich zur Dichte — ein eigener Grösseneffekt."
+      },
+      "pct_foreign_2024": {
+        "label": "Ausländeranteil (%)",
+        "desc": "Anteil nicht-schweizerischer Einwohner. Die ROHE Steigung ist NEGATIV (mehr Ausländer ↔ weniger Ja; sie konzentrieren sich in Städten, die Nein stimmten), doch das ist durch die städtische Grösse konfundiert. Bereinigt um die übrigen Variablen UND stimmengewichtet ist der Zusammenhang POSITIV (≈ +0,14), im räumlichen Fehlermodell +0,16 — positiv und robust über die Spezifikationen (Konfundierung / Simpson-Paradox). Ökologisch: Ausländer stimmen auf Bundesebene nicht."
+      },
+      "pct_agriculture": {
+        "label": "Landwirtschaftsfläche (%)",
+        "desc": "Anteil der Gemeindefläche unter Landwirtschaft. Positiv mit Ja verbunden — die einzige von der Dichte unabhängige Bodennutzungsdimension."
+      },
+      "sprawl_logratio": {
+        "label": "Zersiedelung  log(EFH/MFH)",
+        "desc": "Log-Verhältnis Einfamilien- zu Mehrfamilienhaus-Fläche. Höher = suburbaner. Schwach, aber robust mit höherem Ja-Anteil verbunden."
+      },
+      "model_residual": {
+        "label": "Modellresiduum (Anomalie)",
+        "desc": "Beobachtetes minus vorhergesagtes Ja (Punkte). BLAU = mehr Ja als erwartet, ROT = mehr Nein. Grosse Werte zeigen, wo die Strukturvariablen danebenliegen."
+      },
+      "tertiary_share": {
+        "label": "Anteil Dienstleistungsjobs (%)",
+        "desc": "Anteil Beschäftigter im Tertiärsektor (STATENT 2023). Dienstleistungsgemeinden tendieren zu Nein."
+      },
+      "pct_catholic_2000": {
+        "label": "Katholisch (%)",
+        "desc": "Anteil römisch-katholisch (Volkszählung 2000, auf Stand 2026 harmonisiert via BFS-Fusionstabelle). Katholische Gemeinden tendieren zu Ja."
+      },
+      "pct_noreligion_2000": {
+        "label": "Konfessionslos (%)",
+        "desc": "Anteil ohne Religionszugehörigkeit (2000, harmonisiert). Säkulare Gemeinden tendieren zu Nein — eines der stärkeren neuen Korrelate."
+      },
+      "vacancy_rate_2019": {
+        "label": "Leerwohnungsziffer (%)",
+        "desc": "Anteil leerstehender Wohnungen (2019). Schwach mit höherem Ja verbunden."
+      },
+      "jobs_per_1000": {
+        "label": "Jobs / 1000 Einw.",
+        "desc": "Arbeitsplätze am Arbeitsort pro 1000 Einwohner (STATENT 2023) — Beschäftigungszentren. Diese tendieren leicht zu Nein."
+      }
+    },
+    "drivers": {
+      "pop_log": {
+        "label": "Bevölkerung gesamt (log)",
+        "explain": "Grössere Gemeinden gehen, unabhängig von der Dichte, mit weniger Ja einher. Städte und grosse Orte stimmten am klarsten Nein. Die Bevölkerungsgrösse erfasst Urbanität über die blosse Dichte hinaus. Eines der beiden stärksten Korrelate."
+      },
+      "density_log": {
+        "label": "Bevölkerungsdichte (log)",
+        "explain": "Dichtere Gemeinden gehen mit weniger Ja einher — städtische Zentren am stärksten dagegen, die ländliche Peripherie am wenigsten. Zusammen mit der Bevölkerung bildet die Dichte die dominante Achse städtischer Grösse."
+      },
+      "pct_foreign": {
+        "label": "Ausländeranteil",
+        "explain": "Auf das Vorzeichen achten — ein Konfundierungsmuster (Simpson-artig). ROH ist es NEGATIV (mehr Ausländer ↔ weniger Ja; sie konzentrieren sich in Städten, die Nein stimmten). Bereinigt um die übrigen Variablen UND stimmengewichtet ist der partielle Zusammenhang POSITIV (≈ +0,14); das räumliche Fehlermodell ergibt +0,16. Eine Robustheitsbatterie (Fehlermodell, Durbin, alternative Nachbarschaftsgewichte, räumliches Binomial) hält ihn in jeder gewichteten/räumlichen Spezifikation positiv (+0,06 bis +0,16) — klein, aber stabil, kein Vorzeichenwechsel. Ökologisch: Ausländer stimmen nicht."
+      },
+      "pct_agriculture": {
+        "label": "Landwirtschaftsfläche",
+        "explain": "Mehr Landwirtschaftsfläche geht mit mehr Ja einher, zusätzlich zu Bevölkerung und Dichte. Es ist das einzige Bodennutzungssignal, das die räumliche Modellierung übersteht, da es von der Dichte unabhängig ist."
+      },
+      "sprawl": {
+        "label": "Zersiedelung (EFH vs MFH)",
+        "explain": "Log(Einfamilien- ÷ Mehrfamilienhaus-Fläche). Unabhängig von der Dichte schwach, aber robust mit mehr Ja verbunden: suburbane Einfamilienhaus-Gemeinden etwas eher Ja. Das Log-Verhältnis trennt Form von Intensität."
+      },
+      "lang_it": {
+        "label": "Italienischsprachig (vs Deutsch)",
+        "explain": "Italienischsprachige Gemeinden — Tessin und italienisches Graubünden — zeigen einen deutlich höheren Ja-Anteil als vergleichbare deutschsprachige, selbst nach allem Übrigen und dem räumlichen Term. Der grösste kategoriale Zusammenhang."
+      },
+      "lang_fr": {
+        "label": "Französischsprachig (vs Deutsch)",
+        "explain": "Französischsprachige Gemeinden gehen mit etwas weniger Ja einher als vergleichbare deutschsprachige. Der Grossteil des Röstigrabens ist ein glatter räumlicher Gradient, den der Fehlerterm absorbiert; dieser bescheidene negative Rest bleibt als Spracheffekt."
+      },
+      "avg_age": {
+        "label": "Durchschnittsalter",
+        "explain": "Nicht signifikant, sobald Bevölkerung, Dichte und Bodennutzung enthalten sind. In einfacheren Modellen schien Alter relevant, war aber ein Stellvertreter für Grösse und Struktur."
+      },
+      "growth": {
+        "label": "Bevölkerungswachstum 2010–24",
+        "explain": "Im vollen Modell nicht signifikant. Nach Bevölkerung, Dichte und Bodennutzung trägt Wachstum nichts bei — es stand für Gemeindegrösse und Stadtstruktur."
+      },
+      "jobs": {
+        "label": "Jobs pro Einwohner",
+        "explain": "Arbeitsplätze pro Einwohner (Beschäftigungszentren). Netto tendieren Zentren leicht zu Nein (−0,04)."
+      },
+      "tertiary": {
+        "label": "Anteil Dienstleistungsjobs",
+        "explain": "Anteil Tertiärsektor-Jobs. Dienstleistungsgemeinden tendieren zu Nein (−0,09) — eine moderne/städtische Achse jenseits der reinen Dichte."
+      },
+      "catholic": {
+        "label": "Katholikenanteil (2000)",
+        "explain": "Anteil römisch-katholisch (VZ 2000, harmonisiert). Katholische Gemeinden tendieren zu Ja (+0,04 im vollen Modell, +0,10 allein). Eine klassische Schweizer Abstimmungsachse."
+      },
+      "noreligion": {
+        "label": "Konfessionslosenanteil (2000)",
+        "explain": "Anteil ohne Religion. Säkulare Gemeinden tendieren zu Nein (−0,10) — eines der stärkeren neuen Korrelate, teils mit Urbanität überlappend, aber mit eigenem Signal (tiefer VIF)."
+      },
+      "vacancy": {
+        "label": "Leerwohnungsziffer",
+        "explain": "Anteil leerstehender Wohnungen (2019). Schwach mit mehr Ja verbunden (+0,02)."
+      },
+      "lang_rm": {
+        "label": "Rätoromanisch (vs Deutsch)",
+        "explain": "Rätoromanischsprachige Gemeinden (Graubünden) — sehr wenige (~12). Mit einem tieferen Ja-Anteil verbunden als vergleichbare deutschsprachige (−0,27), wegen der geringen Zahl aber unsicher geschätzt."
+      }
+    }
+  },
+  "fr": {
+    "nav": {
+      "map": "Carte",
+      "correlates": "Corrélats",
+      "fit": "Ajustement",
+      "anomalies": "Anomalies",
+      "data": "Données"
+    },
+    "hero": {
+      "kicker": "Votation fédérale · 14 juin 2026",
+      "title": "Une Suisse à dix millions seulement ?",
+      "sub": "— qui a voté Oui, et ce qui va avec.",
+      "lede": "L'initiative populaire fédérale <em>« Pas de Suisse à 10 millions ! » (initiative pour la durabilité)</em> visait à plafonner la population permanente de la Suisse à dix millions en restreignant l'immigration. Le corps électoral l'a <strong>rejetée</strong> (45,2 % de Oui). Nous cartographions la part du Oui sur <strong>chaque commune suisse</strong> et mesurons ce avec quoi elle <strong>corrèle</strong> — un soutien plus fort dans les communes rurales, agricoles, catholiques et à forte part d'étrangers, plus faible dans les grandes villes denses, laïques et de services, sur un fort gradient régional (le Tessin italophone le plus favorable).",
+      "disclaimer": "Il s'agit d'une <strong>analyse corrélationnelle et écologique</strong> au niveau communal. Elle décrit quelles caractéristiques des lieux varient avec le vote — non pas pourquoi des individus ont voté, ni de causalité."
+    },
+    "bento": {
+      "result_label": "Résultat national — Rejetée",
+      "no": "Non",
+      "yes": "Oui",
+      "result_foot": "Part des suffrages valables · toute la Suisse",
+      "communes": "Communes",
+      "communes_foot": "Communes politiques †",
+      "variance": "Variance expliquée",
+      "variance_foot": "Modèle à erreur spatiale",
+      "correlate": "Corrélat le plus fort",
+      "correlate_val": "Échelle urbaine",
+      "correlate_foot": "Population & densité ↔ moins de Oui",
+      "footnote": "† 2 105 des 2 110 communes politiques (1.1.2026). Cinq petites communes bernoises — Meienried, Hellsau, Deisswil b. Münchenbuchsee, Oberhünigen et Niedermuhlern — annoncent leurs résultats fédéraux conjointement avec une commune voisine ; elles sont comptées mais non listées séparément. Couverture territoriale et électorale complète."
+    },
+    "rationale": {
+      "head": "Comment lire ceci",
+      "p1": "La <strong>variable expliquée</strong> est la part du Oui de chaque commune. Nous la relions à des variables sociodémographiques, linguistiques, d'utilisation du sol et de forme urbaine, toutes issues des données fédérales ouvertes, jointes par le numéro OFS de commune.",
+      "p2": "Les votes suisses sont <strong>structurés dans l'espace</strong> — les communes voisines votent de façon similaire. Nous utilisons un <strong>modèle à erreur spatiale</strong> sur le logit de la part du Oui, pondéré par les voix, qui absorbe le gradient régional (le <em>Röstigraben</em>), de sorte que les associations ne soient pas des artefacts géographiques.",
+      "p3": "Les coefficients sont <strong>standardisés</strong> : chacun est la variation du vote associée à un écart d'un écart-type de cette variable, les autres étant maintenues constantes. Ce sont des <strong>associations, pas des causes</strong>. Sélectionnez une variable sur la carte pour lire ce qu'elle mesure.",
+      "spec_head": "Le modèle, précisément",
+      "def_type": "<strong>Type</strong> — une régression à erreur spatiale (SEM), estimée par maximum de vraisemblance : un modèle linéaire avec terme d'erreur spatialement corrélé.",
+      "def_outcome": "<strong>Variable expliquée</strong> (Yesᵢ) — le logit de la part du Oui de chaque commune, log(p/(1−p)) ; le logit linéarise la part bornée 0–100 %.",
+      "def_weights": "<strong>Pondération</strong> — chaque commune est pondérée par son nombre de suffrages valables, pour que les villes comptent proportionnellement et que les petites communes ne dominent pas.",
+      "def_spatial": "<strong>Terme spatial</strong> — uᵢ = λ·Σⱼ wᵢⱼ uⱼ + εᵢ, où W est la matrice de voisinage (contiguïté « reine ») normalisée par ligne ; λ ≈ 0,74 mesure la force du lien entre résidus voisins et absorbe le gradient régional (le Röstigraben).",
+      "def_coef": "<strong>Coefficients</strong> (βₖ) — les prédicteurs sont standardisés ; chaque β est la variation du logit de la part du Oui pour un écart d'un écart-type, les autres maintenues constantes. Des associations, pas des causes.",
+      "formula": "logit(Yesᵢ) = β₀ + Σₖ βₖ·z(xₖᵢ) + γ·langᵢ + uᵢ        uᵢ = λ Σⱼ wᵢⱼ uⱼ + εᵢ"
+    },
+    "map": {
+      "head": "La géographie du vote",
+      "note": "Chaque commune colorée selon la variable choisie. Cliquez sur une commune pour l'épingler ; cliquez dans le vide pour désélectionner. Géométrie : limites généralisées, LV95 suisse.",
+      "readout_hint": "Survolez ou cliquez une commune pour son profil complet."
+    },
+    "assoc": {
+      "head": "Ce avec quoi la part du Oui corrèle",
+      "note": "Association standardisée avec la part du Oui (logit, par 1 ÉT), modèle à erreur spatiale, sans variables de parti. Les barres à gauche du zéro vont avec moins de Oui, à droite avec plus. Ce sont des corrélations, pas des effets causaux.",
+      "caption": "*** p<0,001 · ** p<0,01 · * p<0,05 · n.s. non significatif. L'association avec la part d'étrangers est écologique — les étrangers ne votent pas au fédéral, elle reflète donc le vote de l'électorat citoyen des communes plus diverses."
+    },
+    "fit": {
+      "head": "Qualité de l'ajustement",
+      "note": "À gauche : un point par commune. Changez l'axe des x entre la prédiction du modèle et chaque variable explicative pour voir le lien avec la part du Oui. Cliquez un point pour identifier la commune. À droite : variance expliquée cumulée à mesure que des blocs de variables sont ajoutés.",
+      "twocol1": "Un modèle bâti <strong>uniquement</strong> sur les 72 catégories d'utilisation du sol atteint un R² validé croisé de <strong>0,36</strong> — un corrélat significatif mais partiel de la structure urbain-rural.",
+      "twocol2": "La population et la densité expliquent l'essentiel de la variance ; le terme d'erreur spatiale (λ = 0,73) porte le pseudo-R² à <strong>0,84</strong> en absorbant le gradient régional."
+    },
+    "scatter": {
+      "model_prediction": "Prédiction du modèle",
+      "langregions": "Régions linguistiques :",
+      "label_cities": "Étiqueter les villes",
+      "yaxis": "Oui observé (%)",
+      "xaxis_pred": "Oui prédit (%)",
+      "cap_overall": "ligne noire = Suisse entière",
+      "cap_lang": "couleur = MCO par langue avec bande IC 95 %",
+      "cap_diag": "tirets gris = prédiction parfaite",
+      "cap_slope": "pente",
+      "cap_communes": "communes",
+      "readout_hint": "Survolez ou cliquez un point pour identifier la commune.",
+      "raw": "Brut",
+      "adjusted": "Ajusté des autres variables",
+      "adj_suffix": "(ajusté)",
+      "adj_caption": "Graphique à variable ajoutée, pondéré par les voix (cohérent avec le modèle). Les deux axes sont résidualisés sur les autres variables ; la pente égale le coefficient du modèle complet. Pour la part d'étrangers : brut −0,34 → ajusté-pondéré ≈ +0,14 → modèle à erreur spatiale +0,16 — positif et robuste selon les spécifications."
+    },
+    "readout": {
+      "yes_share": "Part du Oui",
+      "predicted_yes": "Oui prédit",
+      "residual": "Résidu",
+      "population": "Population",
+      "density": "Densité / km²",
+      "foreign": "Part d'étrangers",
+      "agricultural": "Surface agricole",
+      "turnout": "Participation",
+      "pts": "pts",
+      "pinned": "épinglée"
+    },
+    "anomalies": {
+      "head": "Anomalies — là où le modèle se trompe",
+      "note_a": "Le résidu est le Oui observé moins le Oui prédit. Il signale les communes ayant voté autrement que ne le prédit leur profil structurel. Sélectionnez",
+      "note_b": "sur la carte pour les voir dans l'espace.",
+      "resid_btn": "Résidu du modèle",
+      "pos_head": "Plus de Oui que prévu",
+      "neg_head": "Plus de Non que prévu",
+      "caption": "Les grands résidus sont surtout de petites communes rurales à la politique locale singulière (religion, minorités linguistiques, employeur unique dominant) que les variables structurelles communales ne saisissent pas.",
+      "th_commune": "Commune",
+      "th_canton": "Canton",
+      "th_yes": "Oui",
+      "th_resid": "Résidu"
+    },
+    "sources": {
+      "head": "Sources des données",
+      "note": "Toutes des données fédérales ouvertes officielles, jointes par le numéro OFS de commune.",
+      "items": [
+        {
+          "name": "Résultats de la votation",
+          "org": "Office fédéral de la statistique (eCH-0252)",
+          "detail": "Oui/Non et participation par commune — 14 juin 2026"
+        },
+        {
+          "name": "Population (STATPOP)",
+          "org": "OFS",
+          "detail": "Population, densité, part d'étrangers, âge moyen, croissance"
+        },
+        {
+          "name": "Utilisation du sol (Statistique de la superficie)",
+          "org": "OFS",
+          "detail": "Couverture/usage du sol en 72 catégories, grille 1 ha"
+        },
+        {
+          "name": "Langue",
+          "org": "Recensement fédéral",
+          "detail": "Langue principale par commune"
+        },
+        {
+          "name": "Limites",
+          "org": "swisstopo / OFS",
+          "detail": "Géométrie communale généralisée, LV95"
+        }
+      ]
+    },
+    "r2": {
+      "head": "R² cumulé par bloc de variables",
+      "blocks": [
+        "Langue (Röstigraben)",
+        "+ Taille & densité",
+        "+ % étrangers",
+        "+ Surface agricole",
+        "+ Forme urbaine (étalement)",
+        "+ Âge & croissance"
+      ],
+      "spatial": "+ Terme d'erreur spatiale"
+    },
+    "footer": {
+      "line1": "Analyse corrélationnelle communale · Votation suisse du 14 juin 2026",
+      "by": "Analyse & site par"
+    },
+    "langnames": {
+      "de": "allemand",
+      "fr": "français",
+      "it": "italien",
+      "rm": "romanche"
+    },
+    "variables": {
+      "init10mio_yes_pct": {
+        "label": "Part du Oui (%)",
+        "desc": "Part des suffrages valables pour l'initiative — la variable expliquée. Les communes bleues penchaient pour le Oui, les rouges pour le Non."
+      },
+      "density_per_km2": {
+        "label": "Densité (hab./km²)",
+        "desc": "Résidents permanents par km². Les communes plus denses sont associées à une part du Oui PLUS FAIBLE — les centres urbains ont voté Non."
+      },
+      "pop_2024": {
+        "label": "Population",
+        "desc": "Population résidante permanente totale. Les communes plus grandes vont avec moins de Oui, au-delà de la densité — un effet de taille distinct."
+      },
+      "pct_foreign_2024": {
+        "label": "Part d'étrangers (%)",
+        "desc": "Part de résidents non suisses. La pente BRUTE est NÉGATIVE (plus d'étrangers ↔ moins de Oui ; ils se concentrent dans les villes, qui ont voté Non), mais c'est confondu par l'échelle urbaine. Ajusté des autres variables ET pondéré par les voix, l'association est POSITIVE (≈ +0,14), et +0,16 dans le modèle à erreur spatiale — positif et robuste selon les spécifications (confusion / paradoxe de Simpson). Écologique : les étrangers ne votent pas au fédéral."
+      },
+      "pct_agriculture": {
+        "label": "Surface agricole (%)",
+        "desc": "Part de la surface communale en agriculture. Positivement associée au Oui — la seule dimension d'usage du sol indépendante de la densité."
+      },
+      "sprawl_logratio": {
+        "label": "Étalement  log(MI/MC)",
+        "desc": "Log-rapport surface maisons individuelles / collectives. Plus élevé = plus suburbain. Faiblement mais robustement associé à plus de Oui."
+      },
+      "model_residual": {
+        "label": "Résidu du modèle (anomalie)",
+        "desc": "Oui observé moins prédit (points). BLEU = plus de Oui que prévu, ROUGE = plus de Non. Les grandes valeurs marquent où les variables structurelles se trompent."
+      },
+      "tertiary_share": {
+        "label": "Part des emplois de services (%)",
+        "desc": "Part des emplois du secteur tertiaire (STATENT 2023). Les communes de services penchent pour le Non."
+      },
+      "pct_catholic_2000": {
+        "label": "Catholique (%)",
+        "desc": "Part catholique-romaine (recensement 2000, harmonisée aux limites 2026 via la table de fusions OFS). Les communes catholiques penchent pour le Oui."
+      },
+      "pct_noreligion_2000": {
+        "label": "Sans religion (%)",
+        "desc": "Part sans appartenance religieuse (2000, harmonisée). Les communes laïques penchent pour le Non — un des nouveaux corrélats les plus forts."
+      },
+      "vacancy_rate_2019": {
+        "label": "Taux de logements vacants (%)",
+        "desc": "Part de logements vacants (2019). Faiblement associé à plus de Oui."
+      },
+      "jobs_per_1000": {
+        "label": "Emplois / 1000 hab.",
+        "desc": "Emplois au lieu de travail pour 1000 habitants (STATENT 2023) — centres d'emploi. Ils penchent légèrement pour le Non."
+      }
+    },
+    "drivers": {
+      "pop_log": {
+        "label": "Population totale (log)",
+        "explain": "Les communes plus grandes vont avec moins de Oui, indépendamment de la densité. Villes et grands bourgs ont voté Non le plus nettement. La taille capte l'urbanité au-delà de l'entassement. L'un des deux corrélats les plus forts."
+      },
+      "density_log": {
+        "label": "Densité de population (log)",
+        "explain": "Les communes plus denses vont avec moins de Oui — les centres urbains s'y opposent le plus, la périphérie rurale le moins. Avec la population, la densité forme l'axe dominant d'échelle urbaine."
+      },
+      "pct_foreign": {
+        "label": "Part d'étrangers",
+        "explain": "Attention au signe — un schéma de confusion (type Simpson). BRUT il est NÉGATIF (plus d'étrangers ↔ moins de Oui ; ils se concentrent dans les villes, qui ont voté Non). Ajusté des autres variables ET pondéré par les voix, l'association partielle est POSITIVE (≈ +0,14) ; le modèle à erreur spatiale donne +0,16. Une batterie de robustesse (erreur spatiale, Durbin, autres pondérations de voisinage, binomial spatial) le maintient positif dans chaque spécification pondérée/spatiale (+0,06 à +0,16) — petit mais stable, sans changement de signe. Écologique : les étrangers ne votent pas."
+      },
+      "pct_agriculture": {
+        "label": "Surface agricole",
+        "explain": "Plus de surface agricole va avec plus de Oui, au-delà de la population et de la densité. C'est le seul signal d'usage du sol qui survit à la modélisation spatiale, car indépendant de la densité."
+      },
+      "sprawl": {
+        "label": "Étalement (individuel vs collectif)",
+        "explain": "Log(surface maisons individuelles ÷ collectives). Net de la densité, faiblement mais robustement associé à plus de Oui : les communes pavillonnaires penchent un peu plus pour le Oui. Le log-rapport isole la forme de l'intensité."
+      },
+      "lang_it": {
+        "label": "Italophone (vs allemand)",
+        "explain": "Les communes italophones — Tessin et Grisons italiens — montrent une part du Oui nettement plus élevée que des communes germanophones comparables, même après tout le reste et le terme spatial. La plus grande association catégorielle."
+      },
+      "lang_fr": {
+        "label": "Francophone (vs allemand)",
+        "explain": "Les communes francophones vont avec une part du Oui un peu plus faible que des germanophones comparables. L'essentiel du Röstigraben est un gradient spatial lisse absorbé par le terme d'erreur ; ce modeste résidu négatif est ce qui reste comme effet de langue."
+      },
+      "avg_age": {
+        "label": "Âge moyen",
+        "explain": "Non significatif une fois population, densité et usage du sol inclus. Dans des modèles plus simples l'âge semblait pertinent, mais c'était un proxy de la taille et de la structure."
+      },
+      "growth": {
+        "label": "Croissance démographique 2010–24",
+        "explain": "Non significatif dans le modèle complet. Après population, densité et usage du sol, la croissance n'ajoute rien — elle représentait la taille et la structure urbaine."
+      },
+      "jobs": {
+        "label": "Emplois par habitant",
+        "explain": "Emplois par habitant (centres d'emploi). Net du reste, ils penchent légèrement pour le Non (−0,04)."
+      },
+      "tertiary": {
+        "label": "Part des emplois de services",
+        "explain": "Part des emplois tertiaires. Les communes de services penchent pour le Non (−0,09) — un axe moderne/urbain distinct de la densité brute."
+      },
+      "catholic": {
+        "label": "Part catholique (2000)",
+        "explain": "Part catholique-romaine (recensement 2000, harmonisée). Les communes catholiques penchent pour le Oui (+0,04 modèle complet, +0,10 seule). Un axe classique du vote suisse."
+      },
+      "noreligion": {
+        "label": "Part sans religion (2000)",
+        "explain": "Part sans appartenance religieuse. Les communes laïques penchent pour le Non (−0,10) — un des nouveaux corrélats les plus forts, recoupant en partie l'urbanité mais avec un signal propre (VIF faible)."
+      },
+      "vacancy": {
+        "label": "Taux de vacance",
+        "explain": "Part de logements vacants (2019). Faiblement associé à plus de Oui (+0,02)."
+      },
+      "lang_rm": {
+        "label": "Romanche (vs allemand)",
+        "explain": "Communes romanches (Grisons) — très peu nombreuses (~12). Associées à une part du Oui plus faible que des germanophones comparables (−0,27), mais l’estimation est incertaine vu le faible nombre."
+      }
+    }
+  },
+  "it": {
+    "nav": {
+      "map": "Mappa",
+      "correlates": "Correlati",
+      "fit": "Adattamento",
+      "anomalies": "Anomalie",
+      "data": "Dati"
+    },
+    "hero": {
+      "kicker": "Votazione federale · 14 giugno 2026",
+      "title": "Una Svizzera di soli dieci milioni?",
+      "sub": "— chi ha votato Sì, e cosa vi si accompagna.",
+      "lede": "L'iniziativa popolare federale <em>« No a una Svizzera da 10 milioni! » (iniziativa per la sostenibilità)</em> voleva limitare a dieci milioni la popolazione permanente svizzera restringendo l'immigrazione. L'elettorato l'ha <strong>respinta</strong> (45,2 % di Sì). Mappiamo la quota di Sì su <strong>ogni comune svizzero</strong> e misuriamo con cosa <strong>correla</strong> — sostegno più alto nei comuni rurali, agricoli, cattolici e con più stranieri, più basso nelle grandi città dense, laiche e di servizi, su un forte gradiente regionale (il Ticino italofono il più favorevole).",
+      "disclaimer": "Questa è un'<strong>analisi correlazionale ed ecologica</strong> a livello comunale. Descrive quali caratteristiche dei luoghi variano col voto — non perché i singoli abbiano votato, né causa-effetto."
+    },
+    "bento": {
+      "result_label": "Risultato nazionale — Respinta",
+      "no": "No",
+      "yes": "Sì",
+      "result_foot": "Quota di voti validi · tutta la Svizzera",
+      "communes": "Comuni",
+      "communes_foot": "Comuni politici †",
+      "variance": "Varianza spiegata",
+      "variance_foot": "Modello a errore spaziale",
+      "correlate": "Correlato più forte",
+      "correlate_val": "Scala urbana",
+      "correlate_foot": "Popolazione & densità ↔ meno Sì",
+      "footnote": "† 2.105 dei 2.110 comuni politici (1.1.2026). Cinque piccoli comuni bernesi — Meienried, Hellsau, Deisswil b. Münchenbuchsee, Oberhünigen e Niedermuhlern — riportano i risultati federali insieme a un comune vicino; sono conteggiati ma non elencati separatamente. Copertura territoriale ed elettorale completa."
+    },
+    "rationale": {
+      "head": "Come leggere",
+      "p1": "La <strong>variabile spiegata</strong> è la quota di Sì di ogni comune. La mettiamo in relazione con variabili sociodemografiche, linguistiche, di uso del suolo e forma urbana, tutte da dati federali aperti ufficiali, unite tramite il numero UST del comune.",
+      "p2": "I voti svizzeri sono <strong>strutturati nello spazio</strong> — i comuni vicini votano in modo simile. Usiamo un <strong>modello a errore spaziale</strong> sul logit della quota di Sì, ponderato per i voti, che assorbe il gradiente regionale (il <em>Röstigraben</em>), così le associazioni non sono artefatti geografici.",
+      "p3": "I coefficienti sono <strong>standardizzati</strong>: ciascuno è la variazione del voto associata a una differenza di una deviazione standard di quella variabile, tenendo costanti le altre. Sono <strong>associazioni, non cause</strong>. Seleziona una variabile sulla mappa per leggere cosa misura.",
+      "spec_head": "Il modello, in dettaglio",
+      "def_type": "<strong>Tipo</strong> — una regressione a errore spaziale (SEM), stimata per massima verosimiglianza: un modello lineare con termine d'errore spazialmente correlato.",
+      "def_outcome": "<strong>Variabile spiegata</strong> (Yesᵢ) — il logit della quota di Sì di ogni comune, log(p/(1−p)); il logit linearizza la quota limitata 0–100%.",
+      "def_weights": "<strong>Ponderazione</strong> — ogni comune è ponderato per il numero di voti validi, così le città contano proporzionalmente e i piccoli comuni non dominano.",
+      "def_spatial": "<strong>Termine spaziale</strong> — uᵢ = λ·Σⱼ wᵢⱼ uⱼ + εᵢ, con W matrice di vicinato (contiguità «regina») normalizzata per riga; λ ≈ 0,74 misura quanto i residui vicini si muovono insieme e assorbe il gradiente regionale (Röstigraben).",
+      "def_coef": "<strong>Coefficienti</strong> (βₖ) — i predittori sono standardizzati; ogni β è la variazione del logit della quota di Sì per una differenza di una deviazione standard, le altre tenute costanti. Associazioni, non cause.",
+      "formula": "logit(Yesᵢ) = β₀ + Σₖ βₖ·z(xₖᵢ) + γ·langᵢ + uᵢ        uᵢ = λ Σⱼ wᵢⱼ uⱼ + εᵢ"
+    },
+    "map": {
+      "head": "La geografia del voto",
+      "note": "Ogni comune colorato secondo la variabile scelta. Clicca un comune per fissarlo; clicca nel vuoto per deselezionare. Geometria: confini generalizzati, LV95 svizzero.",
+      "readout_hint": "Passa sopra o clicca un comune per il profilo completo."
+    },
+    "assoc": {
+      "head": "Con cosa correla la quota di Sì",
+      "note": "Associazione standardizzata con la quota di Sì (logit, per 1 DS), modello a errore spaziale, senza variabili di partito. Le barre a sinistra dello zero vanno con meno Sì, a destra con più. Sono correlazioni, non effetti causali.",
+      "caption": "*** p<0,001 · ** p<0,01 · * p<0,05 · n.s. non significativo. L'associazione con la quota di stranieri è ecologica — gli stranieri non votano a livello federale, riflette quindi il voto dell'elettorato cittadino dei comuni più diversi."
+    },
+    "fit": {
+      "head": "Quanto si adatta",
+      "note": "A sinistra: un punto per comune. Cambia l'asse x tra la previsione del modello e ogni variabile esplicativa per vedere il legame con la quota di Sì. Clicca un punto per identificare il comune. A destra: varianza spiegata cumulata aggiungendo blocchi di variabili.",
+      "twocol1": "Un modello costruito <strong>solo</strong> sulle 72 categorie di uso del suolo raggiunge un R² in validazione incrociata di <strong>0,36</strong> — un correlato significativo ma parziale della struttura urbano-rurale.",
+      "twocol2": "Popolazione e densità spiegano gran parte della varianza; il termine di errore spaziale (λ = 0,73) porta lo pseudo-R² a <strong>0,84</strong> assorbendo il gradiente regionale."
+    },
+    "scatter": {
+      "model_prediction": "Previsione del modello",
+      "langregions": "Regioni linguistiche:",
+      "label_cities": "Etichetta città",
+      "yaxis": "Sì osservato (%)",
+      "xaxis_pred": "Sì previsto (%)",
+      "cap_overall": "linea nera = Svizzera intera",
+      "cap_lang": "colore = OLS per lingua con banda IC 95%",
+      "cap_diag": "tratteggio grigio = previsione perfetta",
+      "cap_slope": "pendenza",
+      "cap_communes": "comuni",
+      "readout_hint": "Passa sopra o clicca un punto per identificare il comune.",
+      "raw": "Grezzo",
+      "adjusted": "Corretto per le altre variabili",
+      "adj_suffix": "(corretto)",
+      "adj_caption": "Grafico a variabile aggiunta, ponderato per i voti (coerente col modello). Entrambi gli assi sono residualizzati sulle altre variabili; la pendenza eguaglia il coefficiente del modello completo. Per la quota di stranieri: grezzo −0,34 → corretto-ponderato ≈ +0,14 → modello a errore spaziale +0,16 — positivo e robusto tra le specificazioni."
+    },
+    "readout": {
+      "yes_share": "Quota di Sì",
+      "predicted_yes": "Sì previsto",
+      "residual": "Residuo",
+      "population": "Popolazione",
+      "density": "Densità / km²",
+      "foreign": "Quota di stranieri",
+      "agricultural": "Superficie agricola",
+      "turnout": "Affluenza",
+      "pts": "pti",
+      "pinned": "fissato"
+    },
+    "anomalies": {
+      "head": "Anomalie — dove il modello sbaglia",
+      "note_a": "Il residuo è il Sì osservato meno il previsto. Segnala i comuni che hanno votato diversamente da quanto previsto dal loro profilo strutturale. Seleziona",
+      "note_b": "sulla mappa per vederli nello spazio.",
+      "resid_btn": "Residuo del modello",
+      "pos_head": "Più Sì del previsto",
+      "neg_head": "Più No del previsto",
+      "caption": "I grandi residui sono per lo più piccoli comuni rurali con politica locale peculiare (religione, minoranze linguistiche, un unico datore di lavoro dominante) che le variabili strutturali comunali non colgono.",
+      "th_commune": "Comune",
+      "th_canton": "Cantone",
+      "th_yes": "Sì",
+      "th_resid": "Residuo"
+    },
+    "sources": {
+      "head": "Fonti dei dati",
+      "note": "Tutti dati federali aperti ufficiali, uniti tramite il numero UST del comune.",
+      "items": [
+        {
+          "name": "Risultati della votazione",
+          "org": "Ufficio federale di statistica (eCH-0252)",
+          "detail": "Sì/No e affluenza per comune — 14 giugno 2026"
+        },
+        {
+          "name": "Popolazione (STATPOP)",
+          "org": "UST",
+          "detail": "Popolazione, densità, quota stranieri, età media, crescita"
+        },
+        {
+          "name": "Uso del suolo (Statistica della superficie)",
+          "org": "UST",
+          "detail": "Copertura/uso del suolo in 72 categorie, griglia 1 ha"
+        },
+        {
+          "name": "Lingua",
+          "org": "Censimento federale",
+          "detail": "Lingua principale per comune"
+        },
+        {
+          "name": "Confini",
+          "org": "swisstopo / UST",
+          "detail": "Geometria comunale generalizzata, LV95"
+        }
+      ]
+    },
+    "r2": {
+      "head": "R² cumulato per blocco di variabili",
+      "blocks": [
+        "Lingua (Röstigraben)",
+        "+ Dimensione & densità",
+        "+ % stranieri",
+        "+ Superficie agricola",
+        "+ Forma urbana (dispersione)",
+        "+ Età & crescita"
+      ],
+      "spatial": "+ Termine di errore spaziale"
+    },
+    "footer": {
+      "line1": "Analisi correlazionale comunale · Votazione svizzera del 14 giugno 2026",
+      "by": "Analisi e sito di"
+    },
+    "langnames": {
+      "de": "tedesco",
+      "fr": "francese",
+      "it": "italiano",
+      "rm": "romancio"
+    },
+    "variables": {
+      "init10mio_yes_pct": {
+        "label": "Quota di Sì (%)",
+        "desc": "Quota di voti validi per l'iniziativa — la variabile spiegata. I comuni blu propendevano per il Sì, i rossi per il No."
+      },
+      "density_per_km2": {
+        "label": "Densità (ab./km²)",
+        "desc": "Residenti permanenti per km². I comuni più densi sono associati a una quota di Sì PIÙ BASSA — i centri urbani hanno votato No."
+      },
+      "pop_2024": {
+        "label": "Popolazione",
+        "desc": "Popolazione residente permanente totale. I comuni più grandi vanno con meno Sì, oltre la densità — un effetto di dimensione distinto."
+      },
+      "pct_foreign_2024": {
+        "label": "Quota di stranieri (%)",
+        "desc": "Quota di residenti non svizzeri. La pendenza GREZZA è NEGATIVA (più stranieri ↔ meno Sì; si concentrano nelle città, che hanno votato No), ma è confusa dalla scala urbana. Corretto per le altre variabili E ponderato per i voti, l'associazione è POSITIVA (≈ +0,14), e +0,16 nel modello a errore spaziale — positivo e robusto tra le specificazioni (confondimento / paradosso di Simpson). Ecologico: gli stranieri non votano a livello federale."
+      },
+      "pct_agriculture": {
+        "label": "Superficie agricola (%)",
+        "desc": "Quota di superficie comunale agricola. Positivamente associata al Sì — l'unica dimensione di uso del suolo indipendente dalla densità."
+      },
+      "sprawl_logratio": {
+        "label": "Dispersione  log(MU/MP)",
+        "desc": "Log-rapporto superficie case unifamiliari / plurifamiliari. Più alto = più suburbano. Debolmente ma robustamente associato a più Sì."
+      },
+      "model_residual": {
+        "label": "Residuo del modello (anomalia)",
+        "desc": "Sì osservato meno previsto (punti). BLU = più Sì del previsto, ROSSO = più No. I valori grandi segnano dove le variabili strutturali sbagliano."
+      },
+      "tertiary_share": {
+        "label": "Quota impieghi nei servizi (%)",
+        "desc": "Quota di impieghi nel settore terziario (STATENT 2023). I comuni di servizi propendono per il No."
+      },
+      "pct_catholic_2000": {
+        "label": "Cattolici (%)",
+        "desc": "Quota cattolico-romana (censimento 2000, armonizzata ai confini 2026 con la tabella di fusioni UST). I comuni cattolici propendono per il Sì."
+      },
+      "pct_noreligion_2000": {
+        "label": "Senza religione (%)",
+        "desc": "Quota senza appartenenza religiosa (2000, armonizzata). I comuni laici propendono per il No — uno dei nuovi correlati più forti."
+      },
+      "vacancy_rate_2019": {
+        "label": "Tasso di sfitto (%)",
+        "desc": "Quota di abitazioni vuote (2019). Debolmente associato a più Sì."
+      },
+      "jobs_per_1000": {
+        "label": "Impieghi / 1000 ab.",
+        "desc": "Impieghi sul luogo di lavoro per 1000 abitanti (STATENT 2023) — centri d'impiego. Propendono lievemente per il No."
+      }
+    },
+    "drivers": {
+      "pop_log": {
+        "label": "Popolazione totale (log)",
+        "explain": "I comuni più grandi vanno con meno Sì, indipendentemente dalla densità. Città e grandi borghi hanno votato No più nettamente. La dimensione coglie l'urbanità oltre l'affollamento. Uno dei due correlati più forti."
+      },
+      "density_log": {
+        "label": "Densità di popolazione (log)",
+        "explain": "I comuni più densi vanno con meno Sì — i centri urbani vi si oppongono di più, la periferia rurale di meno. Con la popolazione, la densità forma l'asse dominante della scala urbana."
+      },
+      "pct_foreign": {
+        "label": "Quota di stranieri",
+        "explain": "Attenzione al segno — uno schema di confondimento (alla Simpson). GREZZO è NEGATIVO (più stranieri ↔ meno Sì; si concentrano nelle città, che hanno votato No). Corretto per le altre variabili E ponderato per i voti, l'associazione parziale è POSITIVA (≈ +0,14); il modello a errore spaziale dà +0,16. Una batteria di robustezza (errore spaziale, Durbin, altri pesi di vicinato, binomiale spaziale) la mantiene positiva in ogni specificazione ponderata/spaziale (+0,06 a +0,16) — piccola ma stabile, senza cambio di segno. Ecologico: gli stranieri non votano."
+      },
+      "pct_agriculture": {
+        "label": "Superficie agricola",
+        "explain": "Più superficie agricola va con più Sì, oltre popolazione e densità. È l'unico segnale di uso del suolo che sopravvive alla modellazione spaziale, perché indipendente dalla densità."
+      },
+      "sprawl": {
+        "label": "Dispersione (unifam. vs plurifam.)",
+        "explain": "Log(superficie case unifamiliari ÷ plurifamiliari). Al netto della densità, debolmente ma robustamente associato a più Sì: i comuni suburbani propendono un po' più per il Sì. Il log-rapporto separa la forma dall'intensità."
+      },
+      "lang_it": {
+        "label": "Italofono (vs tedesco)",
+        "explain": "I comuni italofoni — Ticino e Grigioni italiano — mostrano una quota di Sì nettamente più alta di comuni germanofoni simili, anche dopo tutto il resto e il termine spaziale. La maggiore associazione categoriale."
+      },
+      "lang_fr": {
+        "label": "Francofono (vs tedesco)",
+        "explain": "I comuni francofoni vanno con una quota di Sì un po' più bassa di germanofoni comparabili. Gran parte del Röstigraben è un gradiente spaziale liscio assorbito dal termine di errore; questo modesto residuo negativo è ciò che resta come effetto della lingua."
+      },
+      "avg_age": {
+        "label": "Età media",
+        "explain": "Non significativa una volta inclusi popolazione, densità e uso del suolo. In modelli più semplici l'età sembrava rilevante, ma era un proxy di dimensione e struttura."
+      },
+      "growth": {
+        "label": "Crescita demografica 2010–24",
+        "explain": "Non significativa nel modello completo. Dopo popolazione, densità e uso del suolo, la crescita non aggiunge nulla — rappresentava dimensione e struttura urbana."
+      },
+      "jobs": {
+        "label": "Impieghi per abitante",
+        "explain": "Impieghi per abitante (centri d'impiego). Al netto del resto propendono lievemente per il No (−0,04)."
+      },
+      "tertiary": {
+        "label": "Quota impieghi servizi",
+        "explain": "Quota di impieghi terziari. I comuni di servizi propendono per il No (−0,09) — un asse moderno/urbano distinto dalla densità grezza."
+      },
+      "catholic": {
+        "label": "Quota cattolica (2000)",
+        "explain": "Quota cattolico-romana (censimento 2000, armonizzata). I comuni cattolici propendono per il Sì (+0,04 modello completo, +0,10 da sola). Un classico asse del voto svizzero."
+      },
+      "noreligion": {
+        "label": "Quota senza religione (2000)",
+        "explain": "Quota senza appartenenza religiosa. I comuni laici propendono per il No (−0,10) — tra i nuovi correlati più forti, in parte sovrapposto all'urbanità ma con segnale proprio (VIF basso)."
+      },
+      "vacancy": {
+        "label": "Tasso di sfitto",
+        "explain": "Quota di abitazioni vuote (2019). Debolmente associato a più Sì (+0,02)."
+      },
+      "lang_rm": {
+        "label": "Romancio (vs tedesco)",
+        "explain": "Comuni romanci (Grigioni) — pochissimi (~12). Associati a una quota di Sì più bassa di germanofoni comparabili (−0,27), ma stima incerta dato il numero esiguo."
+      }
+    }
+  },
+  "rm": {
+    "nav": {
+      "map": "Charta",
+      "correlates": "Correlats",
+      "fit": "Adattaziun",
+      "anomalies": "Anomalias",
+      "data": "Datas"
+    },
+    "hero": {
+      "kicker": "Votaziun federala · 14 da zercladur 2026",
+      "title": "Ina Svizra dad mo diesch milliuns?",
+      "sub": "— tgi che ha votà Gea, e tge che va cun quai.",
+      "lede": "L'iniziativa federala dal pievel <em>« Nagina Svizra da 10 milliuns! » (iniziativa per la persistenza)</em> vuleva limitar la populaziun permanenta da la Svizra a diesch milliuns cun restrenscher l'immigraziun. Il electorat l'ha <strong>refusada</strong> (45,2 % Gea). Nus chartain la part dal Gea sur <strong>mintga vischnanca svizra</strong> e mesirain cun tge ch'ella <strong>correlescha</strong> — pli ferm sustegn en vischnancas ruralas, agriculas, catolicas e cun dapli persunas estras, pli flaivel en grondas citads densas e seculares, sur in ferm gradient regiunal (il Tessin talian il pli favuraivel).",
+      "disclaimer": "Quai è ina <strong>analisa correlaziunala ed ecologica</strong> sin nivel da vischnanca. Ella descriva tge caracteristicas dals lieus che van ensemen cun la votaziun — betg pertge ch'ils singuls han votà, e nagina causa-effect."
+    },
+    "bento": {
+      "result_label": "Resultat naziunal — Refusada",
+      "no": "Na",
+      "yes": "Gea",
+      "result_foot": "Part da las vuschs validas · tut la Svizra",
+      "communes": "Vischnancas",
+      "communes_foot": "Vischnancas politicas †",
+      "variance": "Varianza declerada",
+      "variance_foot": "Model dad errur spazial",
+      "correlate": "Correlat il pli ferm",
+      "correlate_val": "Grondezza urbana",
+      "correlate_foot": "Populaziun & densitad ↔ pli pauc Gea"
+    },
+    "rationale": {
+      "head": "Co leger quai"
+    },
+    "map": {
+      "head": "La geografia da la votaziun",
+      "note": "Mintga vischnanca colurada tenor la variabla tschernida. Clicca ina vischnanca per la fixar; clicca en il vid per deseleger. Geometria: cunfins generalisads, LV95 svizzer.",
+      "readout_hint": "Sfila u clicca ina vischnanca per il profil cumplet."
+    },
+    "assoc": {
+      "head": "Cun tge che la part dal Gea correlescha",
+      "note": "Associaziun standardisada cun la part dal Gea (logit, per 1 DS), model dad errur spazial, senza variablas da partidas. Bastuns a sanestra da nulla van cun pli pauc Gea, a dretga cun dapli. Quai èn correlaziuns, betg effects causals."
+    },
+    "fit": {
+      "head": "Quant bain ch'el sa adatta"
+    },
+    "scatter": {
+      "model_prediction": "Prognosa dal model",
+      "langregions": "Regiuns linguisticas:",
+      "label_cities": "Etichettar las citads",
+      "yaxis": "Gea observà (%)",
+      "xaxis_pred": "Gea prognostitgà (%)",
+      "cap_overall": "lingia naira = Svizra entira",
+      "cap_lang": "colur = OLS per lingua cun banda IC 95%",
+      "cap_diag": "stritgà grisch = prognosa perfetga",
+      "cap_slope": "pendenza",
+      "cap_communes": "vischnancas",
+      "readout_hint": "Sfila u clicca in punct per identifitgar la vischnanca.",
+      "raw": "Brut",
+      "adjusted": "Adattà per autras variablas",
+      "adj_suffix": "(adattà)"
+    },
+    "readout": {
+      "yes_share": "Part dal Gea",
+      "predicted_yes": "Gea prognostitgà",
+      "residual": "Residuum",
+      "population": "Populaziun",
+      "density": "Densitad / km²",
+      "foreign": "Part da pajais",
+      "agricultural": "Surfatscha agricula",
+      "turnout": "Participaziun",
+      "pts": "pts",
+      "pinned": "fixà"
+    },
+    "anomalies": {
+      "head": "Anomalias — nua ch'il model sbaglia",
+      "note_a": "Il residuum è il Gea observà minus il prognostitgà. El signalisescha vischnancas che han votà autramain che lur profil structural prevesa. Tscherna",
+      "note_b": "sin la charta per las vesair en il spazi.",
+      "resid_btn": "Residuum dal model",
+      "pos_head": "Dapli Gea che spetgà",
+      "neg_head": "Dapli Na che spetgà",
+      "caption": "Gronds residuums èn per ordinari pitschnas vischnancas ruralas cun ina politica locala speziala che las variablas structuralas na pon betg chapir.",
+      "th_commune": "Vischnanca",
+      "th_canton": "Chantun",
+      "th_yes": "Gea",
+      "th_resid": "Resid."
+    },
+    "sources": {
+      "head": "Funtaunas da datas",
+      "note": "Tut datas federalas avertas uffizialas, colliadas tras il numer UST da la vischnanca."
+    },
+    "r2": {
+      "head": "R² cumulà per bloc da variablas",
+      "spatial": "+ Term dad errur spazial"
+    },
+    "footer": {
+      "line1": "Analisa correlaziunala sin nivel da vischnanca · Votaziun svizra dals 14 da zercladur 2026",
+      "by": "Analisa & website da"
+    },
+    "langnames": {
+      "de": "tudestg",
+      "fr": "franzos",
+      "it": "talian",
+      "rm": "rumantsch"
+    },
+    "variables": {
+      "init10mio_yes_pct": {
+        "label": "Part dal Gea (%)"
+      },
+      "density_per_km2": {
+        "label": "Densitad (ab./km²)"
+      },
+      "pop_2024": {
+        "label": "Populaziun"
+      },
+      "pct_foreign_2024": {
+        "label": "Part da pajais (%)"
+      },
+      "pct_agriculture": {
+        "label": "Surfatscha agricula (%)"
+      },
+      "sprawl_logratio": {
+        "label": "Dispersiun  log(CU/CP)"
+      },
+      "model_residual": {
+        "label": "Residuum dal model (anomalia)"
+      }
+    },
+    "drivers": {
+      "pop_log": {
+        "label": "Populaziun totala (log)"
+      },
+      "density_log": {
+        "label": "Densitad da populaziun (log)"
+      },
+      "pct_foreign": {
+        "label": "Part da pajais"
+      },
+      "pct_agriculture": {
+        "label": "Surfatscha agricula"
+      },
+      "sprawl": {
+        "label": "Dispersiun (CU vs CP)"
+      },
+      "lang_it": {
+        "label": "Talian (vs tudestg)"
+      },
+      "lang_fr": {
+        "label": "Franzos (vs tudestg)"
+      },
+      "avg_age": {
+        "label": "Vegliadetgna media"
+      },
+      "growth": {
+        "label": "Creschientscha 2010–24"
+      }
+    }
+  }
+}

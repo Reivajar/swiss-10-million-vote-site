@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A Switzerland of Only Ten Million? — A Commune-Level Analysis</title>
+<meta name="description" content="Interactive correlational analysis of the 14 June 2026 Swiss referendum on capping the population at ten million, across all 2,105 communes." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<a class="skip" href="#map">Skip to map</a>
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <a class="mark" href="#top" aria-label="Home">
+      <span class="mark__sq" aria-hidden="true"></span>
+      <span>10&nbsp;MILLIONS</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#map" data-i18n="nav.map">Map</a>
+      <a href="#assoc" data-i18n="nav.correlates">Correlates</a>
+      <a href="#fit" data-i18n="nav.fit">Fit</a>
+      <a href="#anomalies" data-i18n="nav.anomalies">Anomalies</a>
+      <a href="#sources" data-i18n="nav.data">Data</a>
+    </nav>
+    <div class="langsw" id="langsw" role="group" aria-label="Language"></div>
+  </div>
+</header>
+
+<main id="top">
+
+  <figure class="herobanner" id="infographic">
+    <img src="assets/gr_04.jpg"
+      alt="Axonometric infographic of the Swiss 10-million referendum: density gradient from dense city (No) to alpine village (Yes), a coefficient bar chart, and the headline 45.2% Yes — rejected."
+      onerror="this.style.display='none';this.closest('.herobanner').classList.add('is-empty')" />
+    <figcaption>Infographic — what correlates with the Yes share across 2,105 communes.</figcaption>
+  </figure>
+
+  <!-- HERO -->
+  <section class="hero wrap">
+    <p class="kicker" data-i18n="hero.kicker"></p>
+    <h1 class="display" data-i18n="hero.title"></h1>
+    <p class="lede" data-i18n="hero.lede"></p>
+    <p class="disclaimer" data-i18n="hero.disclaimer"></p>
+  </section>
+
+  <!-- METRICS / BENTO -->
+  <section class="wrap bento" aria-label="Headline figures">
+    <div class="tile tile--big tile--result">
+      <span class="tile__label" data-i18n="bento.result_label"></span>
+      <div class="rsplit">
+        <span class="rs__num rs--no">54.8<span class="u">%&nbsp;<span data-i18n="bento.no"></span></span></span>
+        <span class="rs__num rs--yes">45.2<span class="u">%&nbsp;<span data-i18n="bento.yes"></span></span></span>
+      </div>
+      <div class="rbar" aria-hidden="true"><span class="rbar__no" style="width:54.8%"></span><span class="rbar__yes" style="width:45.2%"></span></div>
+      <span class="tile__foot" data-i18n="bento.result_foot"></span>
+    </div>
+    <div class="tile">
+      <span class="tile__label" data-i18n="bento.communes"></span>
+      <span class="tile__num">2,105</span>
+      <span class="tile__foot" data-i18n="bento.communes_foot"></span>
+    </div>
+    <div class="tile">
+      <span class="tile__label" data-i18n="bento.variance"></span>
+      <span class="tile__num">0.86<span class="u">R²</span></span>
+      <span class="tile__foot" data-i18n="bento.variance_foot"></span>
+    </div>
+    <div class="tile tile--accent">
+      <span class="tile__label" data-i18n="bento.correlate"></span>
+      <span class="tile__num" data-i18n="bento.correlate_val"></span>
+      <span class="tile__foot" data-i18n="bento.correlate_foot"></span>
+    </div>
+  </section>
+  <p class="wrap bento-note" data-i18n="bento.footnote"></p>
+
+  <!-- RATIONALE -->
+  <section class="section">
+    <div class="wrap rationale">
+      <div class="section__head"><h2 class="h2"><span class="idx">00</span> <span data-i18n="rationale.head"></span></h2></div>
+      <p class="rationale__lead" data-i18n="rationale.p1"></p>
+      <div class="modelspec">
+        <div class="modelspec__h" data-i18n="rationale.spec_head"></div>
+        <code class="formula" data-i18n="rationale.formula"></code>
+        <ul class="modelspec__defs">
+          <li data-i18n="rationale.def_type"></li>
+          <li data-i18n="rationale.def_outcome"></li>
+          <li data-i18n="rationale.def_weights"></li>
+          <li data-i18n="rationale.def_spatial"></li>
+          <li data-i18n="rationale.def_coef"></li>
+        </ul>
+      </div>
+      <p class="rationale__note" data-i18n="rationale.p3"></p>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section id="map" class="section section--alt">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2"><span class="idx">01</span> <span data-i18n="map.head"></span></h2>
+        <p class="note" data-i18n="map.note"></p>
+      </div>
+      <div class="varbar" id="varbar" role="tablist" aria-label="Map variable"></div>
+      <p class="vardesc" id="vardesc" aria-live="polite"></p>
+      <div class="maprow">
+        <figure class="mapfig">
+          <svg id="chmap" role="img" aria-label="Choropleth map of Switzerland"></svg>
+          <figcaption class="legend" id="legend"></figcaption>
+        </figure>
+        <aside class="readout" id="readout" aria-live="polite"></aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSOCIATIONS -->
+  <section id="assoc" class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2"><span class="idx">02</span> <span data-i18n="assoc.head"></span></h2>
+        <p class="note" data-i18n="assoc.note"></p>
+      </div>
+      <div id="forest" class="forest"></div>
+      <p class="caption" data-i18n="assoc.caption"></p>
+    </div>
+  </section>
+
+  <!-- MODEL FIT -->
+  <section id="fit" class="section section--alt">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2"><span class="idx">03</span> <span data-i18n="fit.head"></span></h2>
+        <p class="note" data-i18n="fit.note"></p>
+      </div>
+      <div class="scatterbar" id="scatterbar" role="tablist" aria-label="Scatter x-axis"></div>
+      <div class="adjtoggle" id="adjtoggle" role="group" aria-label="Raw or adjusted"></div>
+      <div class="langtoggle" id="langtoggle" aria-label="Toggle language groups"></div>
+      <div class="fitgrid">
+        <figure class="scatterfig">
+          <svg id="scatter" role="img" aria-label="Scatter of the Yes share against the selected variable"></svg>
+          <figcaption class="caption" id="scatter-cap"></figcaption>
+          <div class="scatter-readout" id="scatter-readout"></div>
+        </figure>
+        <div id="r2" class="r2"></div>
+      </div>
+      <div class="twocol">
+        <p data-i18n="fit.twocol1"></p>
+        <p data-i18n="fit.twocol2"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANOMALIES -->
+  <section id="anomalies" class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2"><span class="idx">04</span> <span data-i18n="anomalies.head"></span></h2>
+        <p class="note"><span data-i18n="anomalies.note_a"></span>
+          <button class="inlinebtn" id="show-resid" data-i18n="anomalies.resid_btn"></button>
+          <span data-i18n="anomalies.note_b"></span></p>
+      </div>
+      <div class="anomgrid">
+        <div class="anomcol">
+          <h3 class="anomcol__h anomcol__h--pos" data-i18n="anomalies.pos_head"></h3>
+          <table class="anomtable" id="anom-pos"></table>
+        </div>
+        <div class="anomcol">
+          <h3 class="anomcol__h anomcol__h--neg" data-i18n="anomalies.neg_head"></h3>
+          <table class="anomtable" id="anom-neg"></table>
+        </div>
+      </div>
+      <p class="caption" data-i18n="anomalies.caption"></p>
+    </div>
+  </section>
+
+  <!-- SOURCES -->
+  <section id="sources" class="section section--alt">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2"><span class="idx">05</span> <span data-i18n="sources.head"></span></h2>
+        <p class="note" data-i18n="sources.note"></p>
+      </div>
+      <div id="sources-grid" class="sources"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <span data-i18n="footer.line1"></span>
+    <span class="foot__credit"><span data-i18n="footer.by"></span>
+      <a href="https://www.linkedin.com/in/javierargota" target="_blank" rel="noopener">Javier Argota Sanchez-Vaquerizo</a></span>
+    <span>Sources: FSO/BFS, swisstopo. Built with D3.</span>
+  </div>
+</footer>
+
+<div id="tip" class="tip" role="status" aria-hidden="true"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
