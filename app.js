@@ -16,7 +16,8 @@ const fmtVar = (k, v) => v == null ? "—" :
 
 let RES, GEO, path, active = "init10mio_yes_pct", scaleFor = {}, pinned = null;
 
-Promise.all([d3.json("data/results.json"), d3.json("data/communes.geojson"), d3.json("data/i18n.json")])
+const DV = "20260617-1";  // data version — bump on each data/i18n deploy to bust browser cache
+Promise.all([d3.json(`data/results.json?v=${DV}`), d3.json(`data/communes.geojson?v=${DV}`), d3.json(`data/i18n.json?v=${DV}`)])
   .then(([res, geo, i18n]) => {
     RES = res; GEO = geo; I18N = i18n;
     const proj = d3.geoIdentity().reflectY(true).fitExtent([[8, 8], [W - 8, H - 8]], geo);
