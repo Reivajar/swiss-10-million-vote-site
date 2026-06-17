@@ -290,6 +290,18 @@
         "col_stab": "Stability",
         "col_reason": "Why dropped",
         "unavail": "Wanted but not available at commune level"
+      },
+      "coef": {
+        "q": "Full coefficient table",
+        "intercept": "(Intercept)",
+        "col_term": "Term",
+        "col_est": "Est.",
+        "col_se": "SE",
+        "col_z": "z",
+        "col_p": "p",
+        "col_ci": "95% CI (model)",
+        "col_wild": "95% CI (wild boot)",
+        "foot": "Spatial-error model · N=2,093 · λ=0.720 · weighted R²=0.867 · Nagelkerke=0.845 · max VIF 2.79. Numeric terms carry a heavy-tail-robust wild-bootstrap CI (3,000 reps); the intercept and language dummies use the model-based CI. Estimates are standardised (per 1 SD) — associations, not causes."
       }
     }
   },
@@ -570,6 +582,18 @@
         "col_stab": "Stabilität",
         "col_reason": "Grund für Verwerfung",
         "unavail": "Gewünscht, aber auf Gemeindeebene nicht verfügbar"
+      },
+      "coef": {
+        "q": "Vollständige Koeffiziententabelle",
+        "intercept": "(Achsenabschnitt)",
+        "col_term": "Term",
+        "col_est": "Schätz.",
+        "col_se": "SE",
+        "col_z": "z",
+        "col_p": "p",
+        "col_ci": "95%-KI (Modell)",
+        "col_wild": "95%-KI (Wild-Boot)",
+        "foot": "Räumliches Fehlermodell · N=2’093 · λ=0,720 · gewichtetes R²=0,867 · Nagelkerke=0,845 · max VIF 2,79. Numerische Terme mit Wild-Bootstrap-KI (robust gegen schwere Ränder, 3’000 Wdh.); Achsenabschnitt und Sprach-Dummys nutzen das modellbasierte KI. Schätzer standardisiert (pro 1 SD) — Zusammenhänge, keine Ursachen."
       }
     }
   },
@@ -850,6 +874,18 @@
         "col_stab": "Stabilité",
         "col_reason": "Motif de l’écart",
         "unavail": "Souhaitées mais indisponibles à l’échelle communale"
+      },
+      "coef": {
+        "q": "Tableau complet des coefficients",
+        "intercept": "(Constante)",
+        "col_term": "Terme",
+        "col_est": "Est.",
+        "col_se": "ET",
+        "col_z": "z",
+        "col_p": "p",
+        "col_ci": "IC 95 % (modèle)",
+        "col_wild": "IC 95 % (wild boot)",
+        "foot": "Modèle à erreur spatiale · N=2 093 · λ=0,720 · R² pondéré=0,867 · Nagelkerke=0,845 · VIF max 2,79. Les termes numériques ont un IC wild-bootstrap (robuste aux queues lourdes, 3 000 rép.) ; la constante et les indicatrices de langue utilisent l’IC du modèle. Estimations standardisées (par 1 ÉT) — associations, non causes."
       }
     }
   },
@@ -1130,6 +1166,18 @@
         "col_stab": "Stabilità",
         "col_reason": "Motivo dello scarto",
         "unavail": "Desiderate ma non disponibili a livello comunale"
+      },
+      "coef": {
+        "q": "Tabella completa dei coefficienti",
+        "intercept": "(Intercetta)",
+        "col_term": "Termine",
+        "col_est": "Stima",
+        "col_se": "ES",
+        "col_z": "z",
+        "col_p": "p",
+        "col_ci": "IC 95% (modello)",
+        "col_wild": "IC 95% (wild boot)",
+        "foot": "Modello a errore spaziale · N=2.093 · λ=0,720 · R² ponderato=0,867 · Nagelkerke=0,845 · VIF max 2,79. I termini numerici hanno un IC wild-bootstrap (robusto alle code pesanti, 3.000 rip.); l’intercetta e le dummy di lingua usano l’IC del modello. Stime standardizzate (per 1 DS) — associazioni, non cause."
       }
     }
   },
@@ -1347,6 +1395,18 @@
         "col_stab": "Stabilitad",
         "col_reason": "Pertge bandunà",
         "unavail": "Giavischadas ma betg disponiblas sin nivel communal"
+      },
+      "coef": {
+        "q": "Tabella cumplaina dals coefficients",
+        "intercept": "(Intercepta)",
+        "col_term": "Term",
+        "col_est": "Stim.",
+        "col_se": "SE",
+        "col_z": "z",
+        "col_p": "p",
+        "col_ci": "IC 95% (model)",
+        "col_wild": "IC 95% (wild boot)",
+        "foot": "Model d’errur spazial · N=2 093 · λ=0,720 · R² ponderà=0,867 · Nagelkerke=0,845 · VIF max 2,79."
       }
     }
   }

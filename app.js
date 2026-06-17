@@ -42,8 +42,8 @@ function applyI18n(lang) {
   d3.selectAll("#langsw .langbtn").attr("aria-pressed", function () { return this.dataset.l === lang; });
   document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   // rebuild language-dependent dynamic UI
-  ["#varbar", "#forest", "#scatterbar", "#adjtoggle", "#langtoggle", "#r2", "#sources-grid", "#anom-pos", "#anom-neg", "#tested-table"].forEach(s => d3.select(s).html(""));
-  buildVarbar(); buildForest(); buildScatterBar(); buildAdjToggle(); buildLangToggles(); buildR2(); buildAnomalies(); buildSources(); buildTested();
+  ["#varbar", "#forest", "#scatterbar", "#adjtoggle", "#langtoggle", "#r2", "#sources-grid", "#anom-pos", "#anom-neg", "#tested-table", "#coef-table"].forEach(s => d3.select(s).html(""));
+  buildVarbar(); buildForest(); buildScatterBar(); buildAdjToggle(); buildLangToggles(); buildR2(); buildAnomalies(); buildSources(); buildTested(); buildCoefTable();
   setVar(active); drawScatter(activeX); hintReadout();
 }
 
@@ -343,4 +343,23 @@ function buildTested() {
     tbl(RES.tested.dropped, [t("disc.tested.col_var"), t("disc.tested.col_src"), t("disc.tested.col_reason"), t("disc.tested.col_stab")]));
   host.append("p").attr("class", "ttab__foot").html(
     `<strong>${t("disc.tested.unavail")}:</strong> ${RES.tested.unavailable.join(" · ")}`);
+}
+
+function buildCoefTable() {
+  const host = d3.select("#coef-table"); if (host.empty() || !RES.coefficients) return;
+  host.html("");
+  const f3 = d3.format("+.3f"), f3u = d3.format(".3f"), f2 = d3.format(".2f");
+  const pf = p => p == null ? "—" : p < 1e-4 ? "<0.0001" : p < 0.001 ? "<0.001" : p >= 0.05 ? f3u(p) + " n.s." : f3u(p);
+  const lbl = d => d.v ? t(`drivers.${d.v}.label`) : t("disc.coef.intercept");
+  const ci = (lo, hi) => lo == null ? "—" : `[${f3(lo)}, ${f3(hi)}]`;
+  let h = `<table class="ttab ctab"><thead><tr>
+      <th>${t("disc.coef.col_term")}</th><th>${t("disc.coef.col_est")}</th><th>${t("disc.coef.col_se")}</th>
+      <th>${t("disc.coef.col_z")}</th><th>${t("disc.coef.col_p")}</th><th>${t("disc.coef.col_ci")}</th><th>${t("disc.coef.col_wild")}</th>
+    </tr></thead><tbody>`;
+  h += RES.coefficients.map(d => `<tr>
+      <td class="tv">${lbl(d)}</td><td>${f3(d.est)}</td><td>${f3u(d.se)}</td><td>${f2(d.z)}</td>
+      <td>${pf(d.p)}</td><td>${ci(d.ci_lo, d.ci_hi)}</td><td>${ci(d.wild_lo, d.wild_hi)}</td></tr>`).join("");
+  h += "</tbody></table>";
+  host.append("div").attr("class", "ttab__wrap").html(h);
+  host.append("p").attr("class", "ttab__foot").html(t("disc.coef.foot"));
 }
