@@ -44,7 +44,7 @@
     },
     "rationale": {
       "head": "How to read this",
-      "p1": "The <strong>outcome</strong> is each commune's Yes share. We relate it to socio-demographic, linguistic, land-use and urban-form variables, all from official federal open data, joined on the BFS commune number.",
+      "p1": "The <strong>outcome</strong> is each commune's Yes share. We relate it to socio-demographic, economic, religious, linguistic and land-use variables, all from official federal open data, joined on the BFS commune number.",
       "p2": "Swiss votes are <strong>spatially structured</strong> — neighbouring communes vote alike. We use a <strong>spatial-error model</strong> on the logit of the Yes share, weighted by votes, which absorbs the regional gradient (the <em>Röstigraben</em>) so the associations are not artefacts of geography.",
       "p3": "Coefficients are <strong>standardised</strong>: each is the change in the vote associated with a one-standard-deviation difference in that variable, holding the others fixed. They are <strong>associations, not causes</strong>. Select any variable on the map to read what it measures.",
       "spec_head": "The model, precisely",
@@ -69,7 +69,7 @@
       "head": "How well it fits",
       "note": "Left: one point per commune. Switch the x-axis between the model's prediction and each explanatory variable to see how the Yes share relates to it. Click a dot to identify the commune. Right: cumulative variance explained as variable blocks are added.",
       "twocol1": "A model built <strong>only</strong> from the 72-category land-use data reaches a cross-validated R² of <strong>0.36</strong> — a meaningful but partial correlate of the urban–rural structure.",
-      "twocol2": "Population and density together account for most of the explained variance; the spatial-error term (λ = 0.72) lifts the pseudo-R² to <strong>0.85</strong> by absorbing the regional gradient."
+      "twocol2": "Population and density together account for most of the explained variance; the spatial-error term (λ = 0.72) lifts the weighted R² to <strong>0.87</strong> by absorbing the regional gradient."
     },
     "scatter": {
       "model_prediction": "Model prediction",
@@ -119,28 +119,33 @@
       "items": [
         {
           "name": "Federal vote results",
-          "org": "Federal Statistical Office (eCH-0252 feed)",
-          "detail": "Commune-level Yes/No, turnout — 14 June 2026"
+          "org": "Federal Statistical Office (FSO), eCH-0252 feed",
+          "detail": "Commune-level Yes/No and turnout, 14 June 2026"
         },
         {
-          "name": "Population (STATPOP)",
+          "name": "Population & migration (STATPOP)",
           "org": "FSO",
-          "detail": "Population, density, % foreign, mean age, growth"
+          "detail": "Population, density, % foreign residents, naturalisations"
+        },
+        {
+          "name": "Jobs (STATENT)",
+          "org": "FSO",
+          "detail": "Jobs per resident and tertiary-sector job share"
+        },
+        {
+          "name": "Religion & language (Census)",
+          "org": "FSO",
+          "detail": "No-religion share, dominant language, linguistic homogeneity — boundary-harmonised to 2026"
         },
         {
           "name": "Land use (Arealstatistik)",
           "org": "FSO",
-          "detail": "72-category land cover/use, 1 ha grid"
-        },
-        {
-          "name": "Language",
-          "org": "Federal Census",
-          "detail": "Dominant language per commune"
+          "detail": "Agricultural-land share (72-category survey, 1 ha grid)"
         },
         {
           "name": "Boundaries",
           "org": "swisstopo / FSO",
-          "detail": "Generalised commune geometry, LV95"
+          "detail": "Generalised commune geometry, LV95 (EPSG:2056)"
         }
       ]
     },
@@ -151,8 +156,8 @@
         "+ Size & density",
         "+ % foreign",
         "+ Agricultural land",
-        "+ Urban form (sprawl)",
-        "+ Age & growth"
+        "+ Economy (jobs, services)",
+        "+ Secular · homogeneity · naturalisation"
       ],
       "spatial": "+ Spatial-error term"
     },
@@ -187,10 +192,6 @@
         "label": "Agricultural land (%)",
         "desc": "Share of commune area used for agriculture. Positively associated with Yes — the one land-use dimension independent of density."
       },
-      "sprawl_logratio": {
-        "label": "Sprawl  log(SF/MF)",
-        "desc": "Log-ratio of single-family to multi-family housing area. Higher = more suburban. Weakly but robustly associated with a higher Yes share."
-      },
       "model_residual": {
         "label": "Model residual (anomaly)",
         "desc": "Observed minus predicted Yes share (points). BLUE = voted MORE Yes than the model expects, RED = more No. Large values mark places the structural variables miss."
@@ -199,17 +200,9 @@
         "label": "Service-job share (%)",
         "desc": "Share of jobs in the tertiary (service) sector (STATENT 2023). Service-economy communes lean No."
       },
-      "pct_catholic_2000": {
-        "label": "Catholic (%)",
-        "desc": "Roman-Catholic share (2000 census, harmonised to 2026 boundaries via the BFS merger table). Catholic communes lean Yes."
-      },
       "pct_noreligion_2000": {
         "label": "No religion (%)",
         "desc": "Share with no religious affiliation (2000 census, harmonised). Secular communes lean No — one of the stronger new correlates."
-      },
-      "vacancy_rate_2019": {
-        "label": "Vacancy rate (%)",
-        "desc": "Share of vacant dwellings (2019). Weakly associated with a higher Yes share."
       },
       "jobs_per_1000": {
         "label": "Jobs / 1,000 residents",
@@ -241,10 +234,6 @@
         "label": "Agricultural land",
         "explain": "More agricultural land goes with a higher Yes share, over and above population and density. It is the one land-use signal that survives spatial modelling because it is uncorrelated with density, capturing rural-agrarian character the population variables miss."
       },
-      "sprawl": {
-        "label": "Sprawl (single- vs multi-family)",
-        "explain": "Log(single-family ÷ multi-family housing area). Net of density it is weakly but robustly associated with a higher Yes share: suburban single-family communes lean slightly more Yes than compact ones. The raw single-family share would only re-measure density; the log-ratio isolates form from intensity."
-      },
       "lang_it": {
         "label": "Italian-speaking (vs German)",
         "explain": "Italian-speaking communes — Ticino and the Italian Grisons — show a markedly higher Yes share than similar German-speaking ones, even after everything else and the spatial term. The largest categorical association — a distinct regional political culture on immigration."
@@ -252,14 +241,6 @@
       "lang_fr": {
         "label": "French-speaking (vs German)",
         "explain": "French-speaking communes are associated with a somewhat lower Yes share than comparable German-speaking ones. Most of the Röstigraben is a smooth spatial gradient absorbed by the spatial-error term; this modest negative residual is what remains as a discrete language effect."
-      },
-      "avg_age": {
-        "label": "Mean age",
-        "explain": "Not significant once population, density and land use are included. In simpler models age looked relevant, but that was a proxy for commune size and structure; with those controlled it carries no independent association."
-      },
-      "growth": {
-        "label": "Population growth 2010–24",
-        "explain": "Not significant in the full model. After total population, density and land use are included, growth adds nothing — it was standing in for commune size and urban structure rather than carrying its own signal."
       },
       "jobs": {
         "label": "Jobs per resident",
@@ -269,17 +250,9 @@
         "label": "Service-job share",
         "explain": "Share of tertiary-sector jobs. Service-economy communes lean No (−0.09) — a modern/urban axis distinct from raw density."
       },
-      "catholic": {
-        "label": "Catholic share (2000)",
-        "explain": "Roman-Catholic share (2000 census, harmonised to current boundaries). Catholic communes lean Yes (+0.04 in the full model, +0.10 alone). A classic Swiss vote axis."
-      },
       "noreligion": {
         "label": "No-religion share (2000)",
         "explain": "Share with no religious affiliation. Secular communes lean No (−0.10) — among the stronger new correlates, partly overlapping urbanity but with independent signal (low VIF)."
-      },
-      "vacancy": {
-        "label": "Vacancy rate",
-        "explain": "Share of vacant dwellings (2019). Weakly associated with more Yes (+0.02) — looser/rural housing markets."
       },
       "lang_rm": {
         "label": "Romansh-speaking (vs German)",
@@ -292,6 +265,31 @@
       "natz": {
         "label": "Naturalisation rate",
         "explain": "Cumulative naturalisations per 1,000 residents (2011–2024). Higher-naturalisation communes lean No (−0.07), independently of the foreign-share effect. Added after formal selection flagged it (stability frequency 0.67) and it proved significant in the spatial model."
+      }
+    },
+    "disc": {
+      "sem": {
+        "q": "What is a spatial-error model (SEM)?",
+        "a": "<p>Swiss votes are <strong>spatially autocorrelated</strong> — neighbouring communes vote alike, so an ordinary regression treats correlated observations as independent and overstates significance (residual Moran's I ≈ 0.52).</p><p>A <strong>spatial-error model</strong> keeps the ordinary predictors but lets the unexplained part be spatially correlated: each commune's error is pulled toward its neighbours' by a parameter <strong>λ</strong> (here 0.72), soaking up the smooth regional gradient — the Röstigraben and the Alps — that no single variable captures. After fitting, residual Moran's I falls to ≈ 0, so the associations are not artefacts of geography.</p><p>It is fitted on the <strong>logit of the Yes share, weighted by valid votes</strong> (a 400,000-resident city counts more than a 200-resident hamlet), by maximum likelihood. Diagnostics preferred the error form over a spatial-<em>lag</em> form (which would assume one commune's vote directly causes its neighbour's).</p>"
+      },
+      "robust": {
+        "q": "Which other spatial models were tested?",
+        "a": "<p>The headline associations were re-estimated across alternatives to confirm they are not artefacts of one specification:</p><ul><li><strong>OLS / weighted OLS</strong> — no spatial term (baseline).</li><li><strong>Spatial-lag (SAR) and spatial-Durbin (SDM)</strong> — model the neighbour's <em>vote</em>.</li><li><strong>Spatial-Durbin-error (SDEM)</strong> — adds neighbours' <em>predictors</em>.</li><li><strong>Alternative weights</strong> — k-nearest-6 instead of shared-border (queen) contiguity.</li><li><strong>Spatial-binomial GAM</strong> — a Markov-random-field (CAR-like) likelihood on the raw counts.</li><li><strong>Canton fixed effects</strong> — 26 cantons instead of language dummies.</li></ul><p>Density, population, agriculture and the foreign share keep their sign and size throughout; the foreign share stays positive (+0.06 to +0.16) in every weighted/spatial model. Details in <code>ROBUSTNESS.md</code>.</p>"
+      },
+      "select": {
+        "q": "How were the variables selected?",
+        "a": "<p><strong>Theory first.</strong> Variables were added because a mechanism was plausible (urban scale, land use, economy, religion, language), never by blind search.</p><p><strong>Then a formal, reproducible screen.</strong> An <strong>elastic-net</strong> (cross-validated) and <strong>stability selection</strong> (200 bootstrap resamples, counting how often each variable is picked) were run over the full candidate pool. This <em>confirmed</em> dropping growth, mean age and sprawl (selection frequency ≤ 0.41) and <em>flagged two omitted variables</em> — linguistic homogeneity (1.00) and naturalisation rate (0.67) — which were added because they also survive the spatial model.</p><p><strong>Then robust inference.</strong> Residuals are heavy-tailed (excess kurtosis ≈ 15), so coefficients were re-tested with HC3 sandwich errors and a <strong>wild bootstrap</strong>. Two terms — Catholic share and vacancy rate — failed this heavy-tail-robust test and were dropped; every variable in the final model has a bootstrap 95% interval excluding zero. The choice was confirmed out-of-sample by 10-fold cross-validation (RMSE 6.82 → 6.57 points). The full register is below.</p>"
+      },
+      "tested": {
+        "q": "All variables tested (kept and dropped)",
+        "kept_head": "In the final model",
+        "dropped_head": "Tested but dropped",
+        "col_var": "Variable",
+        "col_src": "Source",
+        "col_coef": "Coef (std)",
+        "col_stab": "Stability",
+        "col_reason": "Why dropped",
+        "unavail": "Wanted but not available at commune level"
       }
     }
   },
@@ -326,7 +324,7 @@
     },
     "rationale": {
       "head": "So liest man dies",
-      "p1": "Die <strong>Zielgrösse</strong> ist der Ja-Anteil jeder Gemeinde. Wir setzen ihn in Beziehung zu soziodemografischen, sprachlichen, Bodennutzungs- und Siedlungsform-Variablen, alle aus amtlichen offenen Bundesdaten, verknüpft über die BFS-Gemeindenummer.",
+      "p1": "Die <strong>Zielgrösse</strong> ist der Ja-Anteil jeder Gemeinde. Wir setzen ihn in Beziehung zu soziodemografischen, wirtschaftlichen, religiösen, sprachlichen und Bodennutzungs-Variablen, alle aus amtlichen offenen Bundesdaten, verknüpft über die BFS-Gemeindenummer.",
       "p2": "Schweizer Abstimmungen sind <strong>räumlich strukturiert</strong> — Nachbargemeinden stimmen ähnlich. Wir verwenden ein <strong>räumliches Fehlermodell</strong> auf dem Logit des Ja-Anteils, gewichtet nach Stimmen, das den regionalen Gradienten (den <em>Röstigraben</em>) absorbiert, sodass die Zusammenhänge keine geografischen Artefakte sind.",
       "p3": "Die Koeffizienten sind <strong>standardisiert</strong>: jeder ist die Veränderung des Resultats, die mit einer Differenz von einer Standardabweichung dieser Variable einhergeht, bei konstant gehaltenen übrigen. Es sind <strong>Zusammenhänge, keine Ursachen</strong>. Wähle eine Variable auf der Karte, um zu sehen, was sie misst.",
       "spec_head": "Das Modell, genau",
@@ -351,7 +349,7 @@
       "head": "Wie gut es passt",
       "note": "Links: ein Punkt pro Gemeinde. Wechsle die x-Achse zwischen der Modellvorhersage und jeder erklärenden Variable, um den Zusammenhang mit dem Ja-Anteil zu sehen. Klick auf einen Punkt identifiziert die Gemeinde. Rechts: kumulierte erklärte Varianz beim Hinzufügen von Variablenblöcken.",
       "twocol1": "Ein Modell <strong>nur</strong> aus den 72 Bodennutzungskategorien erreicht ein kreuzvalidiertes R² von <strong>0,36</strong> — ein bedeutsames, aber partielles Korrelat der Stadt-Land-Struktur.",
-      "twocol2": "Bevölkerung und Dichte erklären den Grossteil der Varianz; der räumliche Fehlerterm (λ = 0,72) hebt das Pseudo-R² auf <strong>0,85</strong>, indem er den regionalen Gradienten absorbiert."
+      "twocol2": "Bevölkerung und Dichte erklären den Grossteil der Varianz; der räumliche Fehlerterm (λ = 0,72) hebt das gewichtetes R² auf <strong>0,87</strong>, indem er den regionalen Gradienten absorbiert."
     },
     "scatter": {
       "model_prediction": "Modellvorhersage",
@@ -401,28 +399,33 @@
       "items": [
         {
           "name": "Abstimmungsresultate",
-          "org": "Bundesamt für Statistik (eCH-0252)",
-          "detail": "Ja/Nein und Beteiligung je Gemeinde — 14. Juni 2026"
+          "org": "Bundesamt für Statistik (BFS), eCH-0252",
+          "detail": "Ja/Nein und Beteiligung je Gemeinde, 14. Juni 2026"
         },
         {
-          "name": "Bevölkerung (STATPOP)",
+          "name": "Bevölkerung & Migration (STATPOP)",
           "org": "BFS",
-          "detail": "Bevölkerung, Dichte, Ausländeranteil, Durchschnittsalter, Wachstum"
+          "detail": "Bevölkerung, Dichte, Ausländeranteil, Einbürgerungen"
+        },
+        {
+          "name": "Beschäftigung (STATENT)",
+          "org": "BFS",
+          "detail": "Stellen je Einwohner und Anteil Dienstleistungsstellen"
+        },
+        {
+          "name": "Religion & Sprache (Volkszählung)",
+          "org": "BFS",
+          "detail": "Konfessionslosen-Anteil, Hauptsprache, sprachliche Homogenität — auf Stand 2026 harmonisiert"
         },
         {
           "name": "Bodennutzung (Arealstatistik)",
           "org": "BFS",
-          "detail": "72 Kategorien Bodenbedeckung/-nutzung, 1-ha-Raster"
+          "detail": "Landwirtschaftsflächen-Anteil (72-Kategorien, 1-ha-Raster)"
         },
         {
-          "name": "Sprache",
-          "org": "Eidg. Volkszählung",
-          "detail": "Hauptsprache je Gemeinde"
-        },
-        {
-          "name": "Grenzen",
+          "name": "Gemeindegrenzen",
           "org": "swisstopo / BFS",
-          "detail": "Generalisierte Gemeindegeometrie, LV95"
+          "detail": "Generalisierte Gemeindegeometrie, LV95 (EPSG:2056)"
         }
       ]
     },
@@ -431,10 +434,10 @@
       "blocks": [
         "Sprache (Röstigraben)",
         "+ Grösse & Dichte",
-        "+ % Ausländer",
+        "+ Ausländeranteil",
         "+ Landwirtschaftsfläche",
-        "+ Siedlungsform (Zersiedelung)",
-        "+ Alter & Wachstum"
+        "+ Wirtschaft (Stellen, Dienstleistung)",
+        "+ Säkular · Homogenität · Einbürgerung"
       ],
       "spatial": "+ Räumlicher Fehlerterm"
     },
@@ -469,10 +472,6 @@
         "label": "Landwirtschaftsfläche (%)",
         "desc": "Anteil der Gemeindefläche unter Landwirtschaft. Positiv mit Ja verbunden — die einzige von der Dichte unabhängige Bodennutzungsdimension."
       },
-      "sprawl_logratio": {
-        "label": "Zersiedelung  log(EFH/MFH)",
-        "desc": "Log-Verhältnis Einfamilien- zu Mehrfamilienhaus-Fläche. Höher = suburbaner. Schwach, aber robust mit höherem Ja-Anteil verbunden."
-      },
       "model_residual": {
         "label": "Modellresiduum (Anomalie)",
         "desc": "Beobachtetes minus vorhergesagtes Ja (Punkte). BLAU = mehr Ja als erwartet, ROT = mehr Nein. Grosse Werte zeigen, wo die Strukturvariablen danebenliegen."
@@ -481,17 +480,9 @@
         "label": "Anteil Dienstleistungsjobs (%)",
         "desc": "Anteil Beschäftigter im Tertiärsektor (STATENT 2023). Dienstleistungsgemeinden tendieren zu Nein."
       },
-      "pct_catholic_2000": {
-        "label": "Katholisch (%)",
-        "desc": "Anteil römisch-katholisch (Volkszählung 2000, auf Stand 2026 harmonisiert via BFS-Fusionstabelle). Katholische Gemeinden tendieren zu Ja."
-      },
       "pct_noreligion_2000": {
         "label": "Konfessionslos (%)",
         "desc": "Anteil ohne Religionszugehörigkeit (2000, harmonisiert). Säkulare Gemeinden tendieren zu Nein — eines der stärkeren neuen Korrelate."
-      },
-      "vacancy_rate_2019": {
-        "label": "Leerwohnungsziffer (%)",
-        "desc": "Anteil leerstehender Wohnungen (2019). Schwach mit höherem Ja verbunden."
       },
       "jobs_per_1000": {
         "label": "Jobs / 1000 Einw.",
@@ -523,10 +514,6 @@
         "label": "Landwirtschaftsfläche",
         "explain": "Mehr Landwirtschaftsfläche geht mit mehr Ja einher, zusätzlich zu Bevölkerung und Dichte. Es ist das einzige Bodennutzungssignal, das die räumliche Modellierung übersteht, da es von der Dichte unabhängig ist."
       },
-      "sprawl": {
-        "label": "Zersiedelung (EFH vs MFH)",
-        "explain": "Log(Einfamilien- ÷ Mehrfamilienhaus-Fläche). Unabhängig von der Dichte schwach, aber robust mit mehr Ja verbunden: suburbane Einfamilienhaus-Gemeinden etwas eher Ja. Das Log-Verhältnis trennt Form von Intensität."
-      },
       "lang_it": {
         "label": "Italienischsprachig (vs Deutsch)",
         "explain": "Italienischsprachige Gemeinden — Tessin und italienisches Graubünden — zeigen einen deutlich höheren Ja-Anteil als vergleichbare deutschsprachige, selbst nach allem Übrigen und dem räumlichen Term. Der grösste kategoriale Zusammenhang."
@@ -534,14 +521,6 @@
       "lang_fr": {
         "label": "Französischsprachig (vs Deutsch)",
         "explain": "Französischsprachige Gemeinden gehen mit etwas weniger Ja einher als vergleichbare deutschsprachige. Der Grossteil des Röstigrabens ist ein glatter räumlicher Gradient, den der Fehlerterm absorbiert; dieser bescheidene negative Rest bleibt als Spracheffekt."
-      },
-      "avg_age": {
-        "label": "Durchschnittsalter",
-        "explain": "Nicht signifikant, sobald Bevölkerung, Dichte und Bodennutzung enthalten sind. In einfacheren Modellen schien Alter relevant, war aber ein Stellvertreter für Grösse und Struktur."
-      },
-      "growth": {
-        "label": "Bevölkerungswachstum 2010–24",
-        "explain": "Im vollen Modell nicht signifikant. Nach Bevölkerung, Dichte und Bodennutzung trägt Wachstum nichts bei — es stand für Gemeindegrösse und Stadtstruktur."
       },
       "jobs": {
         "label": "Jobs pro Einwohner",
@@ -551,17 +530,9 @@
         "label": "Anteil Dienstleistungsjobs",
         "explain": "Anteil Tertiärsektor-Jobs. Dienstleistungsgemeinden tendieren zu Nein (−0,09) — eine moderne/städtische Achse jenseits der reinen Dichte."
       },
-      "catholic": {
-        "label": "Katholikenanteil (2000)",
-        "explain": "Anteil römisch-katholisch (VZ 2000, harmonisiert). Katholische Gemeinden tendieren zu Ja (+0,04 im vollen Modell, +0,10 allein). Eine klassische Schweizer Abstimmungsachse."
-      },
       "noreligion": {
         "label": "Konfessionslosenanteil (2000)",
         "explain": "Anteil ohne Religion. Säkulare Gemeinden tendieren zu Nein (−0,10) — eines der stärkeren neuen Korrelate, teils mit Urbanität überlappend, aber mit eigenem Signal (tiefer VIF)."
-      },
-      "vacancy": {
-        "label": "Leerwohnungsziffer",
-        "explain": "Anteil leerstehender Wohnungen (2019). Schwach mit mehr Ja verbunden (+0,02)."
       },
       "lang_rm": {
         "label": "Rätoromanisch (vs Deutsch)",
@@ -574,6 +545,31 @@
       "natz": {
         "label": "Einbürgerungsquote",
         "explain": "Kumulierte Einbürgerungen je 1’000 Einwohner (2011–2024). Gemeinden mit mehr Einbürgerungen neigen zu Nein (−0,07), unabhängig vom Ausländeranteil. Nach der formalen Selektion (Stabilitätshäufigkeit 0,67) aufgenommen und im räumlichen Modell signifikant."
+      }
+    },
+    "disc": {
+      "sem": {
+        "q": "Was ist ein räumliches Fehlermodell (SEM)?",
+        "a": "<p>Schweizer Abstimmungen sind <strong>räumlich autokorreliert</strong> — Nachbargemeinden stimmen ähnlich. Eine gewöhnliche Regression behandelt korrelierte Beobachtungen als unabhängig und überschätzt die Signifikanz (Residuen-Moran-I ≈ 0,52).</p><p>Ein <strong>räumliches Fehlermodell</strong> behält die üblichen Prädiktoren, lässt aber den unerklärten Teil räumlich korrelieren: der Fehler jeder Gemeinde wird über einen Parameter <strong>λ</strong> (hier 0,72) zu den Nachbarn gezogen und absorbiert so das glatte regionale Gefälle — den Röstigraben und die Alpen. Nach der Schätzung fällt das Residuen-Moran-I auf ≈ 0.</p><p>Geschätzt wird auf dem <strong>Logit des Ja-Anteils, gewichtet mit den gültigen Stimmen</strong>, per Maximum-Likelihood. Diagnosen bevorzugten die Fehler- gegenüber der räumlichen <em>Lag</em>-Form.</p>"
+      },
+      "robust": {
+        "q": "Welche anderen räumlichen Modelle wurden getestet?",
+        "a": "<p>Die Hauptzusammenhänge wurden über Alternativen neu geschätzt:</p><ul><li><strong>OLS / gewichtetes OLS</strong> — ohne räumlichen Term.</li><li><strong>Spatial-Lag (SAR) und Spatial-Durbin (SDM)</strong> — modellieren die Nachbarstimme.</li><li><strong>Spatial-Durbin-Error (SDEM)</strong> — fügt Nachbar-Prädiktoren hinzu.</li><li><strong>Alternative Gewichte</strong> — k-nächste-6 statt Damenkontiguität.</li><li><strong>Räumliches Binomial-GAM</strong> — Markov-Random-Field (CAR-artig) auf den Rohzählungen.</li><li><strong>Kantons-Fixeffekte</strong> — 26 Kantone statt Sprach-Dummys.</li></ul><p>Dichte, Bevölkerung, Landwirtschaft und Ausländeranteil behalten Vorzeichen und Grösse; der Ausländeranteil bleibt in jedem gewichteten/räumlichen Modell positiv (+0,06 bis +0,16). Details in <code>ROBUSTNESS.md</code>.</p>"
+      },
+      "select": {
+        "q": "Wie wurden die Variablen ausgewählt?",
+        "a": "<p><strong>Zuerst Theorie.</strong> Variablen wurden aufgenommen, weil ein Mechanismus plausibel war (urbane Grösse, Bodennutzung, Wirtschaft, Religion, Sprache), nie per Blindsuche.</p><p><strong>Dann ein formales, reproduzierbares Screening.</strong> Ein <strong>Elastic Net</strong> (kreuzvalidiert) und <strong>Stabilitätsselektion</strong> (200 Bootstrap-Stichproben) liefen über den ganzen Kandidatenpool. Das <em>bestätigte</em> das Verwerfen von Wachstum, Alter und Zersiedelung (Häufigkeit ≤ 0,41) und <em>markierte zwei fehlende Variablen</em> — sprachliche Homogenität (1,00) und Einbürgerungsquote (0,67) —, die aufgenommen wurden, da sie auch das räumliche Modell überstehen.</p><p><strong>Dann robuste Inferenz.</strong> Die Residuen sind schwerschwänzig (Exzess-Kurtosis ≈ 15), daher wurden die Koeffizienten mit HC3 und einem <strong>Wild Bootstrap</strong> neu getestet. Zwei Terme — Katholikenanteil und Leerstand — fielen durch und wurden verworfen; jede Variable im finalen Modell hat ein Bootstrap-95%-Intervall ohne Null. Bestätigt out-of-sample per 10-facher Kreuzvalidierung (RMSE 6,82 → 6,57). Das vollständige Register unten.</p>"
+      },
+      "tested": {
+        "q": "Alle getesteten Variablen (behalten und verworfen)",
+        "kept_head": "Im finalen Modell",
+        "dropped_head": "Getestet, aber verworfen",
+        "col_var": "Variable",
+        "col_src": "Quelle",
+        "col_coef": "Koeff. (std)",
+        "col_stab": "Stabilität",
+        "col_reason": "Grund für Verwerfung",
+        "unavail": "Gewünscht, aber auf Gemeindeebene nicht verfügbar"
       }
     }
   },
@@ -608,7 +604,7 @@
     },
     "rationale": {
       "head": "Comment lire ceci",
-      "p1": "La <strong>variable expliquée</strong> est la part du Oui de chaque commune. Nous la relions à des variables sociodémographiques, linguistiques, d'utilisation du sol et de forme urbaine, toutes issues des données fédérales ouvertes, jointes par le numéro OFS de commune.",
+      "p1": "La <strong>variable expliquée</strong> est la part du Oui de chaque commune. Nous la relions à des variables sociodémographiques, économiques, religieuses, linguistiques et d’utilisation du sol, toutes issues des données fédérales ouvertes, jointes par le numéro OFS de commune.",
       "p2": "Les votes suisses sont <strong>structurés dans l'espace</strong> — les communes voisines votent de façon similaire. Nous utilisons un <strong>modèle à erreur spatiale</strong> sur le logit de la part du Oui, pondéré par les voix, qui absorbe le gradient régional (le <em>Röstigraben</em>), de sorte que les associations ne soient pas des artefacts géographiques.",
       "p3": "Les coefficients sont <strong>standardisés</strong> : chacun est la variation du vote associée à un écart d'un écart-type de cette variable, les autres étant maintenues constantes. Ce sont des <strong>associations, pas des causes</strong>. Sélectionnez une variable sur la carte pour lire ce qu'elle mesure.",
       "spec_head": "Le modèle, précisément",
@@ -633,7 +629,7 @@
       "head": "Qualité de l'ajustement",
       "note": "À gauche : un point par commune. Changez l'axe des x entre la prédiction du modèle et chaque variable explicative pour voir le lien avec la part du Oui. Cliquez un point pour identifier la commune. À droite : variance expliquée cumulée à mesure que des blocs de variables sont ajoutés.",
       "twocol1": "Un modèle bâti <strong>uniquement</strong> sur les 72 catégories d'utilisation du sol atteint un R² validé croisé de <strong>0,36</strong> — un corrélat significatif mais partiel de la structure urbain-rural.",
-      "twocol2": "La population et la densité expliquent l'essentiel de la variance ; le terme d'erreur spatiale (λ = 0,72) porte le pseudo-R² à <strong>0,85</strong> en absorbant le gradient régional."
+      "twocol2": "La population et la densité expliquent l'essentiel de la variance ; le terme d'erreur spatiale (λ = 0,72) porte le weighted R² à <strong>0,87</strong> en absorbant le gradient régional."
     },
     "scatter": {
       "model_prediction": "Prédiction du modèle",
@@ -683,28 +679,33 @@
       "items": [
         {
           "name": "Résultats de la votation",
-          "org": "Office fédéral de la statistique (eCH-0252)",
-          "detail": "Oui/Non et participation par commune — 14 juin 2026"
+          "org": "Office fédéral de la statistique (OFS), eCH-0252",
+          "detail": "Oui/Non et participation par commune, 14 juin 2026"
         },
         {
-          "name": "Population (STATPOP)",
+          "name": "Population & migration (STATPOP)",
           "org": "OFS",
-          "detail": "Population, densité, part d'étrangers, âge moyen, croissance"
+          "detail": "Population, densité, part d’étrangers, naturalisations"
+        },
+        {
+          "name": "Emplois (STATENT)",
+          "org": "OFS",
+          "detail": "Emplois par habitant et part des emplois tertiaires"
+        },
+        {
+          "name": "Religion & langue (recensement)",
+          "org": "OFS",
+          "detail": "Part sans religion, langue dominante, homogénéité linguistique — harmonisé aux limites 2026"
         },
         {
           "name": "Utilisation du sol (Statistique de la superficie)",
           "org": "OFS",
-          "detail": "Couverture/usage du sol en 72 catégories, grille 1 ha"
+          "detail": "Part des terres agricoles (relevé 72 catégories, grille 1 ha)"
         },
         {
-          "name": "Langue",
-          "org": "Recensement fédéral",
-          "detail": "Langue principale par commune"
-        },
-        {
-          "name": "Limites",
+          "name": "Limites communales",
           "org": "swisstopo / OFS",
-          "detail": "Géométrie communale généralisée, LV95"
+          "detail": "Géométrie communale généralisée, MN95 (EPSG:2056)"
         }
       ]
     },
@@ -713,10 +714,10 @@
       "blocks": [
         "Langue (Röstigraben)",
         "+ Taille & densité",
-        "+ % étrangers",
-        "+ Surface agricole",
-        "+ Forme urbaine (étalement)",
-        "+ Âge & croissance"
+        "+ Part d’étrangers",
+        "+ Terres agricoles",
+        "+ Économie (emplois, services)",
+        "+ Laïcité · homogénéité · naturalisation"
       ],
       "spatial": "+ Terme d'erreur spatiale"
     },
@@ -751,10 +752,6 @@
         "label": "Surface agricole (%)",
         "desc": "Part de la surface communale en agriculture. Positivement associée au Oui — la seule dimension d'usage du sol indépendante de la densité."
       },
-      "sprawl_logratio": {
-        "label": "Étalement  log(MI/MC)",
-        "desc": "Log-rapport surface maisons individuelles / collectives. Plus élevé = plus suburbain. Faiblement mais robustement associé à plus de Oui."
-      },
       "model_residual": {
         "label": "Résidu du modèle (anomalie)",
         "desc": "Oui observé moins prédit (points). BLEU = plus de Oui que prévu, ROUGE = plus de Non. Les grandes valeurs marquent où les variables structurelles se trompent."
@@ -763,17 +760,9 @@
         "label": "Part des emplois de services (%)",
         "desc": "Part des emplois du secteur tertiaire (STATENT 2023). Les communes de services penchent pour le Non."
       },
-      "pct_catholic_2000": {
-        "label": "Catholique (%)",
-        "desc": "Part catholique-romaine (recensement 2000, harmonisée aux limites 2026 via la table de fusions OFS). Les communes catholiques penchent pour le Oui."
-      },
       "pct_noreligion_2000": {
         "label": "Sans religion (%)",
         "desc": "Part sans appartenance religieuse (2000, harmonisée). Les communes laïques penchent pour le Non — un des nouveaux corrélats les plus forts."
-      },
-      "vacancy_rate_2019": {
-        "label": "Taux de logements vacants (%)",
-        "desc": "Part de logements vacants (2019). Faiblement associé à plus de Oui."
       },
       "jobs_per_1000": {
         "label": "Emplois / 1000 hab.",
@@ -805,10 +794,6 @@
         "label": "Surface agricole",
         "explain": "Plus de surface agricole va avec plus de Oui, au-delà de la population et de la densité. C'est le seul signal d'usage du sol qui survit à la modélisation spatiale, car indépendant de la densité."
       },
-      "sprawl": {
-        "label": "Étalement (individuel vs collectif)",
-        "explain": "Log(surface maisons individuelles ÷ collectives). Net de la densité, faiblement mais robustement associé à plus de Oui : les communes pavillonnaires penchent un peu plus pour le Oui. Le log-rapport isole la forme de l'intensité."
-      },
       "lang_it": {
         "label": "Italophone (vs allemand)",
         "explain": "Les communes italophones — Tessin et Grisons italiens — montrent une part du Oui nettement plus élevée que des communes germanophones comparables, même après tout le reste et le terme spatial. La plus grande association catégorielle."
@@ -816,14 +801,6 @@
       "lang_fr": {
         "label": "Francophone (vs allemand)",
         "explain": "Les communes francophones vont avec une part du Oui un peu plus faible que des germanophones comparables. L'essentiel du Röstigraben est un gradient spatial lisse absorbé par le terme d'erreur ; ce modeste résidu négatif est ce qui reste comme effet de langue."
-      },
-      "avg_age": {
-        "label": "Âge moyen",
-        "explain": "Non significatif une fois population, densité et usage du sol inclus. Dans des modèles plus simples l'âge semblait pertinent, mais c'était un proxy de la taille et de la structure."
-      },
-      "growth": {
-        "label": "Croissance démographique 2010–24",
-        "explain": "Non significatif dans le modèle complet. Après population, densité et usage du sol, la croissance n'ajoute rien — elle représentait la taille et la structure urbaine."
       },
       "jobs": {
         "label": "Emplois par habitant",
@@ -833,17 +810,9 @@
         "label": "Part des emplois de services",
         "explain": "Part des emplois tertiaires. Les communes de services penchent pour le Non (−0,09) — un axe moderne/urbain distinct de la densité brute."
       },
-      "catholic": {
-        "label": "Part catholique (2000)",
-        "explain": "Part catholique-romaine (recensement 2000, harmonisée). Les communes catholiques penchent pour le Oui (+0,04 modèle complet, +0,10 seule). Un axe classique du vote suisse."
-      },
       "noreligion": {
         "label": "Part sans religion (2000)",
         "explain": "Part sans appartenance religieuse. Les communes laïques penchent pour le Non (−0,10) — un des nouveaux corrélats les plus forts, recoupant en partie l'urbanité mais avec un signal propre (VIF faible)."
-      },
-      "vacancy": {
-        "label": "Taux de vacance",
-        "explain": "Part de logements vacants (2019). Faiblement associé à plus de Oui (+0,02)."
       },
       "lang_rm": {
         "label": "Romanche (vs allemand)",
@@ -856,6 +825,31 @@
       "natz": {
         "label": "Taux de naturalisation",
         "explain": "Naturalisations cumulées pour 1 000 habitants (2011–2024). Les communes à forte naturalisation penchent pour le Non (−0,07), indépendamment de la part d'étrangers. Ajoutée après la sélection formelle (fréquence de stabilité 0,67), significative dans le modèle spatial."
+      }
+    },
+    "disc": {
+      "sem": {
+        "q": "Qu’est-ce qu’un modèle à erreur spatiale (SEM) ?",
+        "a": "<p>Les votes suisses sont <strong>spatialement autocorrélés</strong> — les communes voisines votent de façon similaire ; une régression ordinaire traite des observations corrélées comme indépendantes et surestime la significativité (Moran's I résiduel ≈ 0,52).</p><p>Un <strong>modèle à erreur spatiale</strong> garde les prédicteurs habituels mais laisse la part inexpliquée être spatialement corrélée : l'erreur de chaque commune est tirée vers celle de ses voisines par un paramètre <strong>λ</strong> (ici 0,72), absorbant le gradient régional lisse — le Röstigraben et les Alpes. Après estimation, le Moran's I résiduel tombe à ≈ 0.</p><p>Il est estimé sur le <strong>logit de la part du Oui, pondéré par les votes valables</strong>, par maximum de vraisemblance. Les diagnostics ont préféré la forme à erreur à la forme à <em>décalage</em> spatial.</p>"
+      },
+      "robust": {
+        "q": "Quels autres modèles spatiaux ont été testés ?",
+        "a": "<p>Les associations principales ont été ré-estimées sur des alternatives :</p><ul><li><strong>MCO / MCO pondéré</strong> — sans terme spatial.</li><li><strong>Décalage spatial (SAR) et Durbin (SDM)</strong> — modélisent le <em>vote</em> voisin.</li><li><strong>Durbin à erreur (SDEM)</strong> — ajoute les prédicteurs voisins.</li><li><strong>Poids alternatifs</strong> — 6 plus proches voisins au lieu de la contiguïté « reine ».</li><li><strong>GAM binomial spatial</strong> — champ de Markov (type CAR) sur les comptages bruts.</li><li><strong>Effets fixes cantonaux</strong> — 26 cantons au lieu des indicatrices de langue.</li></ul><p>Densité, population, agriculture et part d'étrangers gardent signe et ampleur ; la part d'étrangers reste positive (+0,06 à +0,16) dans tout modèle pondéré/spatial. Détails dans <code>ROBUSTNESS.md</code>.</p>"
+      },
+      "select": {
+        "q": "Comment les variables ont-elles été sélectionnées ?",
+        "a": "<p><strong>La théorie d'abord.</strong> Les variables ont été ajoutées pour un mécanisme plausible (échelle urbaine, sol, économie, religion, langue), jamais par recherche aveugle.</p><p><strong>Puis un tri formel et reproductible.</strong> Un <strong>elastic-net</strong> (validé croisé) et une <strong>sélection de stabilité</strong> (200 rééchantillonnages) ont parcouru tout l'ensemble des candidates. Cela a <em>confirmé</em> l'écart de la croissance, de l'âge et de l'étalement (fréquence ≤ 0,41) et <em>signalé deux variables omises</em> — homogénéité linguistique (1,00) et taux de naturalisation (0,67) — ajoutées car elles résistent aussi au modèle spatial.</p><p><strong>Puis une inférence robuste.</strong> Les résidus sont à queues lourdes (kurtosis ≈ 15) ; les coefficients ont été re-testés par erreurs HC3 et un <strong>wild bootstrap</strong>. Deux termes — part catholique et taux de vacance — ont échoué et ont été écartés ; chaque variable finale a un intervalle bootstrap à 95 % excluant zéro. Choix confirmé hors échantillon par validation croisée 10 plis (RMSE 6,82 → 6,57). Le registre complet ci-dessous.</p>"
+      },
+      "tested": {
+        "q": "Toutes les variables testées (retenues et écartées)",
+        "kept_head": "Dans le modèle final",
+        "dropped_head": "Testées mais écartées",
+        "col_var": "Variable",
+        "col_src": "Source",
+        "col_coef": "Coef (std)",
+        "col_stab": "Stabilité",
+        "col_reason": "Motif de l’écart",
+        "unavail": "Souhaitées mais indisponibles à l’échelle communale"
       }
     }
   },
@@ -890,7 +884,7 @@
     },
     "rationale": {
       "head": "Come leggere",
-      "p1": "La <strong>variabile spiegata</strong> è la quota di Sì di ogni comune. La mettiamo in relazione con variabili sociodemografiche, linguistiche, di uso del suolo e forma urbana, tutte da dati federali aperti ufficiali, unite tramite il numero UST del comune.",
+      "p1": "La <strong>variabile spiegata</strong> è la quota di Sì di ogni comune. La mettiamo in relazione con variabili sociodemografiche, economiche, religiose, linguistiche e di uso del suolo, tutte da dati federali aperti ufficiali, unite tramite il numero UST del comune.",
       "p2": "I voti svizzeri sono <strong>strutturati nello spazio</strong> — i comuni vicini votano in modo simile. Usiamo un <strong>modello a errore spaziale</strong> sul logit della quota di Sì, ponderato per i voti, che assorbe il gradiente regionale (il <em>Röstigraben</em>), così le associazioni non sono artefatti geografici.",
       "p3": "I coefficienti sono <strong>standardizzati</strong>: ciascuno è la variazione del voto associata a una differenza di una deviazione standard di quella variabile, tenendo costanti le altre. Sono <strong>associazioni, non cause</strong>. Seleziona una variabile sulla mappa per leggere cosa misura.",
       "spec_head": "Il modello, in dettaglio",
@@ -915,7 +909,7 @@
       "head": "Quanto si adatta",
       "note": "A sinistra: un punto per comune. Cambia l'asse x tra la previsione del modello e ogni variabile esplicativa per vedere il legame con la quota di Sì. Clicca un punto per identificare il comune. A destra: varianza spiegata cumulata aggiungendo blocchi di variabili.",
       "twocol1": "Un modello costruito <strong>solo</strong> sulle 72 categorie di uso del suolo raggiunge un R² in validazione incrociata di <strong>0,36</strong> — un correlato significativo ma parziale della struttura urbano-rurale.",
-      "twocol2": "Popolazione e densità spiegano gran parte della varianza; il termine di errore spaziale (λ = 0,72) porta lo pseudo-R² a <strong>0,85</strong> assorbendo il gradiente regionale."
+      "twocol2": "Popolazione e densità spiegano gran parte della varianza; il termine di errore spaziale (λ = 0,72) porta lo weighted R² a <strong>0,87</strong> assorbendo il gradiente regionale."
     },
     "scatter": {
       "model_prediction": "Previsione del modello",
@@ -965,28 +959,33 @@
       "items": [
         {
           "name": "Risultati della votazione",
-          "org": "Ufficio federale di statistica (eCH-0252)",
-          "detail": "Sì/No e affluenza per comune — 14 giugno 2026"
+          "org": "Ufficio federale di statistica (UST), eCH-0252",
+          "detail": "Sì/No e partecipazione per comune, 14 giugno 2026"
         },
         {
-          "name": "Popolazione (STATPOP)",
+          "name": "Popolazione & migrazione (STATPOP)",
           "org": "UST",
-          "detail": "Popolazione, densità, quota stranieri, età media, crescita"
+          "detail": "Popolazione, densità, quota stranieri, naturalizzazioni"
+        },
+        {
+          "name": "Impieghi (STATENT)",
+          "org": "UST",
+          "detail": "Impieghi per abitante e quota di impieghi terziari"
+        },
+        {
+          "name": "Religione & lingua (censimento)",
+          "org": "UST",
+          "detail": "Quota senza religione, lingua dominante, omogeneità linguistica — armonizzato ai confini 2026"
         },
         {
           "name": "Uso del suolo (Statistica della superficie)",
           "org": "UST",
-          "detail": "Copertura/uso del suolo in 72 categorie, griglia 1 ha"
+          "detail": "Quota di superficie agricola (rilevazione 72 categorie, griglia 1 ha)"
         },
         {
-          "name": "Lingua",
-          "org": "Censimento federale",
-          "detail": "Lingua principale per comune"
-        },
-        {
-          "name": "Confini",
+          "name": "Confini comunali",
           "org": "swisstopo / UST",
-          "detail": "Geometria comunale generalizzata, LV95"
+          "detail": "Geometria comunale generalizzata, CN95 (EPSG:2056)"
         }
       ]
     },
@@ -995,10 +994,10 @@
       "blocks": [
         "Lingua (Röstigraben)",
         "+ Dimensione & densità",
-        "+ % stranieri",
+        "+ Quota stranieri",
         "+ Superficie agricola",
-        "+ Forma urbana (dispersione)",
-        "+ Età & crescita"
+        "+ Economia (impieghi, servizi)",
+        "+ Laicità · omogeneità · naturalizzazione"
       ],
       "spatial": "+ Termine di errore spaziale"
     },
@@ -1033,10 +1032,6 @@
         "label": "Superficie agricola (%)",
         "desc": "Quota di superficie comunale agricola. Positivamente associata al Sì — l'unica dimensione di uso del suolo indipendente dalla densità."
       },
-      "sprawl_logratio": {
-        "label": "Dispersione  log(MU/MP)",
-        "desc": "Log-rapporto superficie case unifamiliari / plurifamiliari. Più alto = più suburbano. Debolmente ma robustamente associato a più Sì."
-      },
       "model_residual": {
         "label": "Residuo del modello (anomalia)",
         "desc": "Sì osservato meno previsto (punti). BLU = più Sì del previsto, ROSSO = più No. I valori grandi segnano dove le variabili strutturali sbagliano."
@@ -1045,17 +1040,9 @@
         "label": "Quota impieghi nei servizi (%)",
         "desc": "Quota di impieghi nel settore terziario (STATENT 2023). I comuni di servizi propendono per il No."
       },
-      "pct_catholic_2000": {
-        "label": "Cattolici (%)",
-        "desc": "Quota cattolico-romana (censimento 2000, armonizzata ai confini 2026 con la tabella di fusioni UST). I comuni cattolici propendono per il Sì."
-      },
       "pct_noreligion_2000": {
         "label": "Senza religione (%)",
         "desc": "Quota senza appartenenza religiosa (2000, armonizzata). I comuni laici propendono per il No — uno dei nuovi correlati più forti."
-      },
-      "vacancy_rate_2019": {
-        "label": "Tasso di sfitto (%)",
-        "desc": "Quota di abitazioni vuote (2019). Debolmente associato a più Sì."
       },
       "jobs_per_1000": {
         "label": "Impieghi / 1000 ab.",
@@ -1087,10 +1074,6 @@
         "label": "Superficie agricola",
         "explain": "Più superficie agricola va con più Sì, oltre popolazione e densità. È l'unico segnale di uso del suolo che sopravvive alla modellazione spaziale, perché indipendente dalla densità."
       },
-      "sprawl": {
-        "label": "Dispersione (unifam. vs plurifam.)",
-        "explain": "Log(superficie case unifamiliari ÷ plurifamiliari). Al netto della densità, debolmente ma robustamente associato a più Sì: i comuni suburbani propendono un po' più per il Sì. Il log-rapporto separa la forma dall'intensità."
-      },
       "lang_it": {
         "label": "Italofono (vs tedesco)",
         "explain": "I comuni italofoni — Ticino e Grigioni italiano — mostrano una quota di Sì nettamente più alta di comuni germanofoni simili, anche dopo tutto il resto e il termine spaziale. La maggiore associazione categoriale."
@@ -1098,14 +1081,6 @@
       "lang_fr": {
         "label": "Francofono (vs tedesco)",
         "explain": "I comuni francofoni vanno con una quota di Sì un po' più bassa di germanofoni comparabili. Gran parte del Röstigraben è un gradiente spaziale liscio assorbito dal termine di errore; questo modesto residuo negativo è ciò che resta come effetto della lingua."
-      },
-      "avg_age": {
-        "label": "Età media",
-        "explain": "Non significativa una volta inclusi popolazione, densità e uso del suolo. In modelli più semplici l'età sembrava rilevante, ma era un proxy di dimensione e struttura."
-      },
-      "growth": {
-        "label": "Crescita demografica 2010–24",
-        "explain": "Non significativa nel modello completo. Dopo popolazione, densità e uso del suolo, la crescita non aggiunge nulla — rappresentava dimensione e struttura urbana."
       },
       "jobs": {
         "label": "Impieghi per abitante",
@@ -1115,17 +1090,9 @@
         "label": "Quota impieghi servizi",
         "explain": "Quota di impieghi terziari. I comuni di servizi propendono per il No (−0,09) — un asse moderno/urbano distinto dalla densità grezza."
       },
-      "catholic": {
-        "label": "Quota cattolica (2000)",
-        "explain": "Quota cattolico-romana (censimento 2000, armonizzata). I comuni cattolici propendono per il Sì (+0,04 modello completo, +0,10 da sola). Un classico asse del voto svizzero."
-      },
       "noreligion": {
         "label": "Quota senza religione (2000)",
         "explain": "Quota senza appartenenza religiosa. I comuni laici propendono per il No (−0,10) — tra i nuovi correlati più forti, in parte sovrapposto all'urbanità ma con segnale proprio (VIF basso)."
-      },
-      "vacancy": {
-        "label": "Tasso di sfitto",
-        "explain": "Quota di abitazioni vuote (2019). Debolmente associato a più Sì (+0,02)."
       },
       "lang_rm": {
         "label": "Romancio (vs tedesco)",
@@ -1138,6 +1105,31 @@
       "natz": {
         "label": "Tasso di naturalizzazione",
         "explain": "Naturalizzazioni cumulate per 1’000 abitanti (2011–2024). I comuni con più naturalizzazioni propendono per il No (−0,07), indipendentemente dalla quota di stranieri. Aggiunta dopo la selezione formale (frequenza di stabilità 0,67), significativa nel modello spaziale."
+      }
+    },
+    "disc": {
+      "sem": {
+        "q": "Cos’è un modello a errore spaziale (SEM)?",
+        "a": "<p>I voti svizzeri sono <strong>spazialmente autocorrelati</strong> — i comuni vicini votano in modo simile; una regressione ordinaria tratta osservazioni correlate come indipendenti e sovrastima la significatività (Moran's I residuo ≈ 0,52).</p><p>Un <strong>modello a errore spaziale</strong> mantiene i predittori usuali ma lascia che la parte inspiegata sia spazialmente correlata: l'errore di ogni comune è attratto verso quello dei vicini da un parametro <strong>λ</strong> (qui 0,72), assorbendo il gradiente regionale liscio — il Röstigraben e le Alpi. Dopo la stima, il Moran's I residuo scende a ≈ 0.</p><p>È stimato sul <strong>logit della quota di Sì, ponderato per i voti validi</strong>, per massima verosimiglianza. Le diagnostiche hanno preferito la forma a errore a quella a <em>ritardo</em> spaziale.</p>"
+      },
+      "robust": {
+        "q": "Quali altri modelli spaziali sono stati testati?",
+        "a": "<p>Le associazioni principali sono state ristimate su alternative:</p><ul><li><strong>OLS / OLS ponderato</strong> — senza termine spaziale.</li><li><strong>Ritardo spaziale (SAR) e Durbin (SDM)</strong> — modellano il <em>voto</em> vicino.</li><li><strong>Durbin a errore (SDEM)</strong> — aggiunge i predittori dei vicini.</li><li><strong>Pesi alternativi</strong> — 6 vicini più prossimi invece della contiguità «regina».</li><li><strong>GAM binomiale spaziale</strong> — campo di Markov (tipo CAR) sui conteggi grezzi.</li><li><strong>Effetti fissi cantonali</strong> — 26 cantoni invece delle dummy di lingua.</li></ul><p>Densità, popolazione, agricoltura e quota stranieri mantengono segno e ampiezza; la quota stranieri resta positiva (+0,06 a +0,16) in ogni modello ponderato/spaziale. Dettagli in <code>ROBUSTNESS.md</code>.</p>"
+      },
+      "select": {
+        "q": "Come sono state selezionate le variabili?",
+        "a": "<p><strong>Prima la teoria.</strong> Le variabili sono state aggiunte per un meccanismo plausibile (scala urbana, suolo, economia, religione, lingua), mai per ricerca cieca.</p><p><strong>Poi un vaglio formale e riproducibile.</strong> Un <strong>elastic-net</strong> (con validazione incrociata) e una <strong>selezione di stabilità</strong> (200 ricampionamenti) hanno percorso l'intero insieme di candidate. Ciò ha <em>confermato</em> lo scarto di crescita, età e dispersione (frequenza ≤ 0,41) e <em>segnalato due variabili omesse</em> — omogeneità linguistica (1,00) e tasso di naturalizzazione (0,67) — aggiunte perché sopravvivono anche al modello spaziale.</p><p><strong>Poi inferenza robusta.</strong> I residui hanno code pesanti (curtosi ≈ 15); i coefficienti sono stati ritestati con errori HC3 e un <strong>wild bootstrap</strong>. Due termini — quota cattolica e tasso di sfitto — non hanno superato il test e sono stati scartati; ogni variabile finale ha un intervallo bootstrap al 95% che esclude lo zero. Scelta confermata fuori campione con validazione incrociata a 10 fold (RMSE 6,82 → 6,57). Il registro completo sotto.</p>"
+      },
+      "tested": {
+        "q": "Tutte le variabili testate (mantenute e scartate)",
+        "kept_head": "Nel modello finale",
+        "dropped_head": "Testate ma scartate",
+        "col_var": "Variabile",
+        "col_src": "Fonte",
+        "col_coef": "Coef (std)",
+        "col_stab": "Stabilità",
+        "col_reason": "Motivo dello scarto",
+        "unavail": "Desiderate ma non disponibili a livello comunale"
       }
     }
   },
@@ -1227,11 +1219,51 @@
     },
     "sources": {
       "head": "Funtaunas da datas",
-      "note": "Tut datas federalas avertas uffizialas, colliadas tras il numer UST da la vischnanca."
+      "note": "Tut datas federalas avertas uffizialas, colliadas tras il numer UST da la vischnanca.",
+      "items": [
+        {
+          "name": "Resultats da la votaziun",
+          "org": "Uffizi federal da statistica (UFS), eCH-0252",
+          "detail": "Gea/Na e participaziun per vischnanca, 14 da zercladur 2026"
+        },
+        {
+          "name": "Populaziun & migraziun (STATPOP)",
+          "org": "UFS",
+          "detail": "Populaziun, densitad, part d’esters, naturalisaziuns"
+        },
+        {
+          "name": "Plazzas (STATENT)",
+          "org": "UFS",
+          "detail": "Plazzas per abitant e part da plazzas en il terziar"
+        },
+        {
+          "name": "Religiun & lingua (dumbraziun)",
+          "org": "UFS",
+          "detail": "Part senza religiun, lingua dominanta, omogenitad linguistica — harmonisà als cunfins 2026"
+        },
+        {
+          "name": "Diever dal terren (Statistica da la surfatscha)",
+          "org": "UFS",
+          "detail": "Part da surfatscha agricula (relevaziun 72 categorias, grilla 1 ha)"
+        },
+        {
+          "name": "Cunfins communals",
+          "org": "swisstopo / UFS",
+          "detail": "Geometria communala generalisada, LV95 (EPSG:2056)"
+        }
+      ]
     },
     "r2": {
       "head": "R² cumulà per bloc da variablas",
-      "spatial": "+ Term dad errur spazial"
+      "spatial": "+ Term dad errur spazial",
+      "blocks": [
+        "Lingua (Röstigraben)",
+        "+ Grondezza & densitad",
+        "+ Part d’esters",
+        "+ Surfatscha agricula",
+        "+ Economia (plazzas, servetschs)",
+        "+ Secular · omogenitad · naturalisaziun"
+      ]
     },
     "footer": {
       "line1": "Analisa correlaziunala sin nivel da vischnanca · Votaziun svizra dals 14 da zercladur 2026",
@@ -1259,9 +1291,6 @@
       "pct_agriculture": {
         "label": "Surfatscha agricula (%)"
       },
-      "sprawl_logratio": {
-        "label": "Dispersiun  log(CU/CP)"
-      },
       "model_residual": {
         "label": "Residuum dal model (anomalia)"
       },
@@ -1285,26 +1314,39 @@
       "pct_agriculture": {
         "label": "Surfatscha agricula"
       },
-      "sprawl": {
-        "label": "Dispersiun (CU vs CP)"
-      },
       "lang_it": {
         "label": "Talian (vs tudestg)"
       },
       "lang_fr": {
         "label": "Franzos (vs tudestg)"
       },
-      "avg_age": {
-        "label": "Vegliadetgna media"
-      },
-      "growth": {
-        "label": "Creschientscha 2010–24"
-      },
       "lang_share": {
         "label": "Omogenitad linguistica"
       },
       "natz": {
         "label": "Quota da naturalisaziun"
+      }
+    },
+    "disc": {
+      "sem": {
+        "q": "Tge è in model d’errur spazial (SEM)?"
+      },
+      "robust": {
+        "q": "Tge auters models spazials èn vegnids testads?"
+      },
+      "select": {
+        "q": "Co èn las variablas vegnidas tschernidas?"
+      },
+      "tested": {
+        "q": "Tut las variablas testadas (tegnidas e bandunadas)",
+        "kept_head": "En il model final",
+        "dropped_head": "Testadas ma bandunadas",
+        "col_var": "Variabla",
+        "col_src": "Funtauna",
+        "col_coef": "Coef (std)",
+        "col_stab": "Stabilitad",
+        "col_reason": "Pertge bandunà",
+        "unavail": "Giavischadas ma betg disponiblas sin nivel communal"
       }
     }
   }

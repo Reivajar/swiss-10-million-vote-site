@@ -301,4 +301,31 @@ em{font-style:normal;border-bottom:2px solid var(--red)}
   .r2row{grid-template-columns:150px 1fr 48px;gap:10px}
   .section{padding:52px 0}
 }
+/* ---------- disclosures (section 02) ---------- */
+.disclosures{margin-top:40px;border-top:1px solid var(--line)}
+.disc{border-bottom:1px solid var(--hair)}
+.disc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;
+  padding:16px 2px;font-weight:600;font-size:1.02rem;color:var(--ink)}
+.disc>summary::-webkit-details-marker{display:none}
+.disc>summary::before{content:"+";font-weight:400;font-size:1.4rem;line-height:1;color:var(--red);width:16px}
+.disc[open]>summary::before{content:"–"}
+.disc[open]>summary{color:var(--red)}
+.disc__body{padding:2px 2px 24px 30px;max-width:78ch;color:#2a2a2a}
+.disc__body p{margin:0 0 12px;line-height:1.62}
+.disc__body ul{margin:0 0 12px;padding-left:18px}
+.disc__body li{margin:4px 0;line-height:1.55}
+.disc__body code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;background:var(--alt);padding:1px 5px}
+/* tested-variable register table */
+.ttab__h{margin:18px 0 6px;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}
+.ttab__h--in{color:var(--pos)} .ttab__h--out{color:var(--neg)}
+.ttab__wrap{overflow-x:auto}
+.ttab{border-collapse:collapse;width:100%;font-size:.86rem}
+.ttab th{text-align:left;font-weight:600;border-bottom:1.5px solid var(--line);padding:5px 10px 5px 0;white-space:nowrap}
+.ttab td{border-bottom:1px solid var(--hair);padding:5px 10px 5px 0;vertical-align:top}
+.ttab td.tv{font-weight:600;white-space:nowrap}
+.ttab td:nth-child(3),.ttab td:nth-child(4){font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;white-space:nowrap}
+.ttab__h--out~.ttab__wrap .ttab td:nth-child(3){font-family:inherit;font-size:.86rem;white-space:normal;color:var(--muted)}
+.ttab__foot{margin-top:12px;font-size:.84rem;color:var(--muted)}
+@media (max-width:640px){.disc__body{padding-left:18px}.ttab{font-size:.8rem}}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

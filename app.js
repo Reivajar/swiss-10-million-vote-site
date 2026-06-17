@@ -42,8 +42,8 @@ function applyI18n(lang) {
   d3.selectAll("#langsw .langbtn").attr("aria-pressed", function () { return this.dataset.l === lang; });
   document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   // rebuild language-dependent dynamic UI
-  ["#varbar", "#forest", "#scatterbar", "#adjtoggle", "#langtoggle", "#r2", "#sources-grid", "#anom-pos", "#anom-neg"].forEach(s => d3.select(s).html(""));
-  buildVarbar(); buildForest(); buildScatterBar(); buildAdjToggle(); buildLangToggles(); buildR2(); buildAnomalies(); buildSources();
+  ["#varbar", "#forest", "#scatterbar", "#adjtoggle", "#langtoggle", "#r2", "#sources-grid", "#anom-pos", "#anom-neg", "#tested-table"].forEach(s => d3.select(s).html(""));
+  buildVarbar(); buildForest(); buildScatterBar(); buildAdjToggle(); buildLangToggles(); buildR2(); buildAnomalies(); buildSources(); buildTested();
   setVar(active); drawScatter(activeX); hintReadout();
 }
 
@@ -304,8 +304,8 @@ function buildR2() {
   });
   host.append("div").attr("class", "r2row").html(
     `<div class="r2row__label" style="color:var(--red);font-weight:700">${t("r2.spatial")}</div>
-     <div class="r2track"><div class="r2fill r2fill--last" style="width:${(0.84 / max) * 100}%"></div></div>
-     <div class="r2val" style="color:var(--red)">0.84</div>`);
+     <div class="r2track"><div class="r2fill r2fill--last" style="width:${(0.867 / max) * 100}%"></div></div>
+     <div class="r2val" style="color:var(--red)">0.87</div>`);
 }
 
 /* ---------- anomalies ---------- */
@@ -325,4 +325,22 @@ function buildSources() {
      <span class="scard__name">${t(`sources.items.${i}.name`)}</span>
      <span class="scard__org">${t(`sources.items.${i}.org`)}</span>
      <span class="scard__detail">${t(`sources.items.${i}.detail`)}</span>`));
+}
+
+function buildTested() {
+  const host = d3.select("#tested-table"); if (host.empty() || !RES.tested) return;
+  host.html("");
+  const tbl = (rows, head4) => {
+    let h = `<table class="ttab"><thead><tr>${head4.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>`;
+    h += rows.map(r => `<tr>${r.map((c, j) => `<td class="${j === 0 ? "tv" : ""}">${c}</td>`).join("")}</tr>`).join("");
+    return h + "</tbody></table>";
+  };
+  host.append("h4").attr("class", "ttab__h ttab__h--in").text(`${t("disc.tested.kept_head")} (${RES.tested.kept.length})`);
+  host.append("div").attr("class", "ttab__wrap").html(
+    tbl(RES.tested.kept, [t("disc.tested.col_var"), t("disc.tested.col_src"), t("disc.tested.col_coef"), t("disc.tested.col_stab")]));
+  host.append("h4").attr("class", "ttab__h ttab__h--out").text(`${t("disc.tested.dropped_head")} (${RES.tested.dropped.length})`);
+  host.append("div").attr("class", "ttab__wrap").html(
+    tbl(RES.tested.dropped, [t("disc.tested.col_var"), t("disc.tested.col_src"), t("disc.tested.col_reason"), t("disc.tested.col_stab")]));
+  host.append("p").attr("class", "ttab__foot").html(
+    `<strong>${t("disc.tested.unavail")}:</strong> ${RES.tested.unavailable.join(" · ")}`);
 }
