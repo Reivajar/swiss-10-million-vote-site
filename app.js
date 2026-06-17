@@ -157,8 +157,9 @@ function buildForest() {
 
 /* ---------- scatter ---------- */
 let activeX = "pred", scatterPinned = null;
-const SCATTER_X = ["pred", "density_per_km2", "pop_2024", "pct_foreign_2024", "pct_agriculture", "sprawl_logratio",
-  "tertiary_share", "pct_catholic_2000", "pct_noreligion_2000", "vacancy_rate_2019", "jobs_per_1000"];
+const SCATTER_X = ["pred", "density_per_km2", "pop_2024", "pct_foreign_2024", "pct_agriculture",
+  "tertiary_share", "pct_noreligion_2000", "jobs_per_1000",
+  "main_lang_share_2000", "natz_per_1000_2024"];
 // Okabe-Ito colourblind-safe palette; black reserved for the overall (Switzerland) line
 const LANG = { de: { color: "#D55E00" }, fr: { color: "#0072B2" }, it: { color: "#009E73" }, rm: { color: "#CC79A7" } };
 const LANG_ORDER = ["de", "fr", "it", "rm"];
@@ -167,8 +168,8 @@ const CITIES = { 261: "Zürich", 6621: "Genève", 2701: "Basel", 5586: "Lausanne
 let showCities = true, scatterAdj = false;
 const langName = k => t(`langnames.${k}`);
 // model variables (for "adjusted" added-variable plots)
-const NUMMODEL = ["density_log", "pop_log", "pct_foreign_2024", "pct_agriculture", "sprawl_logratio", "avg_age_2024", "growth_pct_2010_2024",
-  "tertiary_share", "pct_catholic_2000", "pct_noreligion_2000", "vacancy_rate_2019", "jobs_pc_log"];
+const NUMMODEL = ["density_log", "pop_log", "pct_foreign_2024", "pct_agriculture", "jobs_pc_log",
+  "tertiary_share", "pct_noreligion_2000", "main_lang_share_2000", "natz_per_1000_2024"];
 const modelKey = k => k === "density_per_km2" ? "density_log" : k === "pop_2024" ? "pop_log" : k === "jobs_per_1000" ? "jobs_pc_log" : k;
 const mval = (p, key) => key === "density_log" ? Math.log10(Math.max(1, p.density_per_km2)) : key === "pop_log" ? Math.log10(Math.max(1, p.pop_2024)) : key === "jobs_pc_log" ? Math.log10(Math.max(1, p.jobs_per_1000)) : p[key];
 function solveOLS(Xr, yv, w) {
