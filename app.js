@@ -16,7 +16,7 @@ const fmtVar = (k, v) => v == null ? "—" :
 
 let RES, GEO, path, active = "init10mio_yes_pct", scaleFor = {}, pinned = null;
 
-const DV = "20260617-1";  // data version — bump on each data/i18n deploy to bust browser cache
+const DV = "20260618-8";  // data version — bump on each data/i18n deploy to bust browser cache
 Promise.all([d3.json(`data/results.json?v=${DV}`), d3.json(`data/communes.geojson?v=${DV}`), d3.json(`data/i18n.json?v=${DV}`)])
   .then(([res, geo, i18n]) => {
     RES = res; GEO = geo; I18N = i18n;
@@ -42,6 +42,7 @@ function applyI18n(lang) {
   LANGUI = lang; localStorage.setItem("lang10mio", lang); document.documentElement.lang = lang;
   d3.selectAll("#langsw .langbtn").attr("aria-pressed", function () { return this.dataset.l === lang; });
   document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-title]").forEach(el => { const v = t(el.dataset.i18nTitle); el.title = v; el.setAttribute("aria-label", v); });
   // rebuild language-dependent dynamic UI
   ["#varbar", "#forest", "#scatterbar", "#adjtoggle", "#langtoggle", "#r2", "#sources-grid", "#anom-pos", "#anom-neg", "#tested-table", "#coef-table"].forEach(s => d3.select(s).html(""));
   buildVarbar(); buildForest(); buildScatterBar(); buildAdjToggle(); buildLangToggles(); buildR2(); buildAnomalies(); buildSources(); buildTested(); buildCoefTable();
@@ -66,12 +67,64 @@ const colour = (k, v) => (v == null || !isFinite(v)) ? "#dcdcdc" : scaleFor[k](v
 const vlabel = k => t(`variables.${k}.label`);
 
 /* ---------- map ---------- */
+let mapZoom;
 function buildMap() {
   const svg = d3.select("#chmap").attr("viewBox", `0 0 ${W} ${H}`).attr("preserveAspectRatio", "xMidYMid meet").on("click", () => unpin());
-  svg.append("g").attr("id", "paths").selectAll("path")
+  svg.selectAll("*").remove();
+  const vp = svg.append("g").attr("id", "mapviewport");
+  vp.append("g").attr("id", "paths").selectAll("path")
     .data(GEO.features).join("path").attr("class", "cm-path").attr("d", path)
     .attr("fill", d => colour(active, d.properties[active]))
     .on("pointermove", onHover).on("pointerleave", onLeave).on("click", onClick);
+
+  // canton borders (dissolved from commune edges) + main-city markers — hidden until toggled
+  vp.append("path").attr("id", "canton-borders").attr("d", path(cantonMesh())).attr("aria-hidden", "true");
+  const cityG = vp.append("g").attr("id", "cities").attr("aria-hidden", "true");
+  for (const [bfs, name] of Object.entries(CITIES)) {
+    const f = GEO.features.find(x => x.properties.bfs_nr === +bfs);
+    if (!f) continue;
+    const [cx, cy] = path.centroid(f);
+    if (!isFinite(cx)) continue;
+    const ge = cityG.append("g").attr("class", "city").attr("transform", `translate(${cx},${cy})`);
+    ge.append("circle").attr("class", "city-dot").attr("r", 3.2);
+    ge.append("text").attr("class", "city-label").attr("x", 5).attr("y", 3.5).text(name);
+  }
+
+  // pan + zoom
+  mapZoom = d3.zoom().scaleExtent([1, 12]).translateExtent([[0, 0], [W, H]])
+    .on("zoom", ev => { vp.attr("transform", ev.transform); rescaleCities(ev.transform.k); });
+  svg.call(mapZoom);
+
+  // controls
+  d3.select("#overlay-toggle").on("change", function () { svg.classed("overlay-on", this.checked); });
+  svg.classed("overlay-on", d3.select("#overlay-toggle").property("checked"));
+  d3.select("#zoom-in").on("click", () => svg.transition().duration(220).call(mapZoom.scaleBy, 1.6));
+  d3.select("#zoom-out").on("click", () => svg.transition().duration(220).call(mapZoom.scaleBy, 1 / 1.6));
+  d3.select("#zoom-reset").on("click", () => svg.transition().duration(280).call(mapZoom.transform, d3.zoomIdentity));
+}
+function rescaleCities(k) {
+  d3.selectAll("#cities .city-dot").attr("r", 3.2 / k);
+  d3.selectAll("#cities .city-label").attr("x", 5 / k).attr("y", 3.5 / k).style("font-size", (11 / k) + "px");
+}
+// dissolve communes into canton/national boundary lines via edge cancellation (shared LV95 vertices)
+function cantonMesh() {
+  const rings = g => g.type === "Polygon" ? g.coordinates : g.type === "MultiPolygon" ? g.coordinates.flat() : [];
+  const m = new Map();
+  for (const f of GEO.features) {
+    const c = f.properties.canton;
+    for (const ring of rings(f.geometry)) {
+      for (let i = 0; i < ring.length - 1; i++) {
+        const a = ring[i], b = ring[i + 1];
+        const ka = a[0] + "," + a[1], kb = b[0] + "," + b[1];
+        const key = ka < kb ? ka + "|" + kb : kb + "|" + ka;
+        let e = m.get(key); if (!e) { e = { a, b, n: 0, c }; m.set(key, e); }
+        e.n++; if (e.c !== c) e.diff = true;
+      }
+    }
+  }
+  const lines = [];
+  for (const e of m.values()) if (!(e.n === 2 && !e.diff)) lines.push([e.a, e.b]);
+  return { type: "MultiLineString", coordinates: lines };
 }
 function repaint() { d3.select("#paths").selectAll("path").attr("fill", d => colour(active, d.properties[active])); }
 
@@ -128,11 +181,27 @@ function buildLegend() {
     stops.push(`${s(v)} ${Math.round(u * 100)}%`);
   }
   const mid = cfg.mid != null ? cfg.mid : (lo + hi) / 2;
-  d3.select("#legend").html(
-    `<span class="legend__title">${vlabel(active)}</span>
-     <div class="legend__bar" style="background:linear-gradient(90deg,${stops.join(",")})"></div>
-     <div class="legend__scale"><span>${fmtVar(active, lo)}</span>
-       ${cfg.mid != null ? `<span>${fmtVar(active, mid)}</span>` : ""}<span>${fmtVar(active, hi)}</span></div>`);
+  
+  // Check if variable has left/right labels in i18n data (like vote outcome)
+  const i18nVar = I18N[LANGUI].variables[active] || {};
+  const leftLabel = i18nVar.left_label;
+  const rightLabel = i18nVar.right_label;
+  
+  if (leftLabel && rightLabel) {
+    d3.select("#legend").html(
+      `<span class="legend__title">${vlabel(active)}</span>
+       <div class="legend__bar-wrapper">
+         <span class="legend__side-label legend__side-label--left">+ ${leftLabel}</span>
+         <div class="legend__bar" style="background:linear-gradient(90deg,${stops.join(",")})"></div>
+         <span class="legend__side-label legend__side-label--right">+ ${rightLabel}</span>
+       </div>`);
+  } else {
+    d3.select("#legend").html(
+      `<span class="legend__title">${vlabel(active)}</span>
+       <div class="legend__bar" style="background:linear-gradient(90deg,${stops.join(",")})"></div>
+       <div class="legend__scale"><span>${fmtVar(active, lo)}</span>
+         ${cfg.mid != null ? `<span>${fmtVar(active, mid)}</span>` : ""}<span>${fmtVar(active, hi)}</span></div>`);
+  }
 }
 
 /* ---------- forest (expandable) ---------- */
@@ -166,7 +235,7 @@ const LANG = { de: { color: "#D55E00" }, fr: { color: "#0072B2" }, it: { color: 
 const LANG_ORDER = ["de", "fr", "it", "rm"];
 const visLang = new Set(LANG_ORDER);
 const CITIES = { 261: "Zürich", 6621: "Genève", 2701: "Basel", 5586: "Lausanne", 351: "Bern", 230: "Winterthur", 1061: "Luzern", 3203: "St. Gallen", 5192: "Lugano", 371: "Biel/Bienne" };
-let showCities = true, scatterAdj = false;
+let showCities = false, scatterAdj = false;
 const langName = k => t(`langnames.${k}`);
 // model variables (for "adjusted" added-variable plots)
 const NUMMODEL = ["density_log", "pop_log", "pct_foreign_2024", "pct_agriculture", "jobs_pc_log",
@@ -221,6 +290,31 @@ function bandPath(R, x, y) {
   for (let i = 0; i <= N; i++) { const xx = R.xmin + (i / N) * (R.xmax - R.xmin), yh = R.a + R.b * xx, se = R.s * Math.sqrt(1 / R.n + (xx - R.xbar) ** 2 / R.Sxx); up.push([x(xx), y(cl(yh + 1.96 * se))]); lo.push([x(xx), y(cl(yh - 1.96 * se))]); }
   return "M" + up.map(p => p.join(" ")).join("L") + "L" + lo.reverse().map(p => p.join(" ")).join("L") + "Z";
 }
+// plain-language, reactive reading of what the trend line in the scatter is showing
+function corrInterp(isPred, isAdj, xKey, r, ctx) {
+  if (isPred) {
+    if (!isFinite(r)) return "";
+    let s = t("scatter.interp_pred").replace("{r}", d3.format("+.2f")(r)).replace("{r2}", d3.format(".2f")(RES.fit.full_r2));
+    if (ctx && ctx.visN < LANG_ORDER.length) s += " " + t("scatter.interp_only").replace("{langs}", (ctx.langNames || []).join(", "));
+    return s;
+  }
+  if (!isFinite(r)) return "";
+  const a = Math.abs(r);
+  const sKey = a < 0.1 ? "negligible" : a < 0.3 ? "weak" : a < 0.5 ? "moderate" : a < 0.7 ? "strong" : "vstrong";
+  let s = t(isAdj ? "scatter.interp_adj" : "scatter.interp_raw")
+    .replace("{var}", `<strong>${vlabel(xKey)}</strong>`)
+    .replace("{strength}", t(`scatter.strength.${sKey}`))
+    .replace("{dir}", t(`scatter.dir.${r >= 0 ? "pos" : "neg"}`))
+    .replace("{trend}", t(`scatter.trend_${r >= 0 ? "up" : "down"}`))
+    .replace("{r}", d3.format("+.2f")(r));
+  // Simpson's reversal: per-language slopes mostly run opposite to the black overall line (raw view only)
+  if (!isAdj && ctx && isFinite(ctx.overallB) && ctx.langB && ctx.langB.length >= 2) {
+    const opp = ctx.langB.filter(b => Math.sign(b) && Math.sign(b) !== Math.sign(ctx.overallB)).length;
+    if (opp >= Math.ceil(ctx.langB.length / 2)) s += " " + t("scatter.interp_within");
+  }
+  if (ctx && ctx.visN < LANG_ORDER.length) s += " " + t("scatter.interp_only");
+  return s;
+}
 function drawScatter(xKey) {
   activeX = xKey; scatterPinned = null;
   d3.selectAll("#scatterbar .varbtn").attr("aria-selected", function () { return this.dataset.xk === xKey; });
@@ -258,22 +352,26 @@ function drawScatter(xKey) {
   if (isAdj) { g.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", y(yext[0])).attr("y2", y(yext[1])).attr("class", "sx-zero"); g.append("line").attr("y1", y(0)).attr("y2", y(0)).attr("x1", x(xext[0])).attr("x2", x(xext[1])).attr("class", "sx-zero"); }
   for (const k of LANG_ORDER) { if (!visLang.has(k)) continue; const gp = all.filter(p => p.main_language === k); if (gp.length < 5) continue; g.append("path").attr("d", bandPath(regStats(gp, xVal, yVal, wv), x, y)).attr("fill", LANG[k].color).attr("class", "sx-band"); }
   g.selectAll("circle.sx-pt").data(pts).join("circle").attr("class", "sx-pt").attr("cx", d => x(xVal(d))).attr("cy", d => y(yVal(d))).attr("r", 2).style("fill", d => LANG[d.main_language].color).on("pointermove", scatterHover).on("pointerleave", scatterLeave).on("click", scatterClick);
-  const slopes = [];
-  for (const k of LANG_ORDER) { if (!visLang.has(k)) continue; const gp = all.filter(p => p.main_language === k); if (gp.length < 5) continue; const R = regStats(gp, xVal, yVal, wv); g.append("line").attr("x1", x(R.xmin)).attr("y1", y(R.a + R.b * R.xmin)).attr("x2", x(R.xmax)).attr("y2", y(R.a + R.b * R.xmax)).attr("stroke", LANG[k].color).attr("class", "sx-langline"); slopes.push(`${langName(k)} ${d3.format("+.1f")(R.b)}`); }
-  let r = NaN;
+  const slopes = [], langB = [];
+  for (const k of LANG_ORDER) { if (!visLang.has(k)) continue; const gp = all.filter(p => p.main_language === k); if (gp.length < 5) continue; const R = regStats(gp, xVal, yVal, wv); g.append("line").attr("x1", x(R.xmin)).attr("y1", y(R.a + R.b * R.xmin)).attr("x2", x(R.xmax)).attr("y2", y(R.a + R.b * R.xmax)).attr("stroke", LANG[k].color).attr("class", "sx-langline"); slopes.push(`${langName(k)} ${d3.format("+.1f")(R.b)}`); langB.push(R.b); }
+  let r = NaN, overallB = NaN;
   if (pts.length > 5) {
-    const Ro = regStats(pts, xVal, yVal, wv);
+    const Ro = regStats(pts, xVal, yVal, wv); overallB = Ro.b;
     g.append("line").attr("x1", x(Ro.xmin)).attr("y1", y(Ro.a + Ro.b * Ro.xmin)).attr("x2", x(Ro.xmax)).attr("y2", y(Ro.a + Ro.b * Ro.xmax)).attr("class", "sx-overall");
+    const olbl = visLang.size === LANG_ORDER.length ? t("scatter.overall_ch") : t("scatter.overall_sel");
+    const oy = Ro.a + Ro.b * Ro.xmax;
+    g.append("text").attr("x", x(Ro.xmax) - 4).attr("y", y(oy) + (Ro.b >= 0 ? -7 : 14)).attr("text-anchor", "end").attr("class", "sx-overall-label").text(olbl);
     let W = 0, mx = 0, my = 0; pts.forEach(d => { const w = wv ? wv(d) : 1; W += w; mx += w * xVal(d); my += w * yVal(d); }); mx /= W; my /= W;
     let sxy = 0, sx = 0, sy = 0; pts.forEach(d => { const w = wv ? wv(d) : 1; sxy += w * (xVal(d) - mx) * (yVal(d) - my); sx += w * (xVal(d) - mx) ** 2; sy += w * (yVal(d) - my) ** 2; });
     r = sxy / Math.sqrt(sx * sy);
   }
   if (showCities) { const cg = g.append("g"); pts.filter(p => CITIES[p.bfs_nr]).forEach(d => { const gx = x(xVal(d)), gy = y(yVal(d)); cg.append("circle").attr("cx", gx).attr("cy", gy).attr("r", 3.6).attr("class", "sx-citydot").style("fill", LANG[d.main_language].color); cg.append("text").attr("x", gx + 6).attr("y", gy - 4).attr("class", "sx-citylabel").text(CITIES[d.bfs_nr]); }); }
-  const stat = isPred ? `R² = ${d3.format(".2f")(RES.fit.full_r2)}` : `r = ${d3.format("+.2f")(r)}${isAdj ? " ·" : ""}`;
+  const stat = isFinite(r) ? `r = ${d3.format("+.2f")(r)}${isAdj ? " ·" : ""}` : "";
   g.append("text").attr("x", x(xext[0]) + 6).attr("y", y(yext[1]) + 6).attr("class", "sx-r2").text(stat);
+  d3.select("#scatter-interp").html(corrInterp(isPred, isAdj, xKey, r, { overallB, langB, visN: visLang.size, langNames: LANG_ORDER.filter(k => visLang.has(k)).map(k => langName(k)) }));
   g.append("text").attr("x", (m + sw) / 2 - 6).attr("y", sh - 6).attr("text-anchor", "middle").attr("class", "sx-axis").text(xlabel);
   g.append("text").attr("transform", `translate(13 ${sh / 2}) rotate(-90)`).attr("text-anchor", "middle").attr("class", "sx-axis").text(ylabel);
-  d3.select("#scatter-cap").html(`${pts.length} ${t("scatter.cap_communes")} · <b>${t("scatter.cap_overall")}</b> · ${t("scatter.cap_lang")}` + (isPred ? ` · ${t("scatter.cap_diag")}` : "") + (slopes.length ? ` · ${t("scatter.cap_slope")}: ${slopes.join(" · ")}` : "") + (isAdj ? `<br>${t("scatter.adj_caption")}` : ""));
+  d3.select("#scatter-cap").html(`${pts.length} ${t("scatter.cap_communes")} · <b>${t("scatter.cap_overall")}</b> · ${t("scatter.cap_lang")}` + (isPred ? ` · ${t("scatter.cap_diag")}` : "") + (slopes.length ? ` · ${t("scatter.cap_slope")}: ${slopes.join(" · ")}` : "") + (isLog ? ` · ${t("scatter.cap_log")}` : "") + (isAdj ? `<br>${t("scatter.adj_caption")}` : ""));
   clearScatterPin();
 }
 function scatterHover(ev, d) {
@@ -307,6 +405,7 @@ function buildR2() {
     `<div class="r2row__label" style="color:var(--red);font-weight:700">${t("r2.spatial")}</div>
      <div class="r2track"><div class="r2fill r2fill--last" style="width:${(0.867 / max) * 100}%"></div></div>
      <div class="r2val" style="color:var(--red)">0.87</div>`);
+  host.append("p").attr("class", "r2note").text(t("r2.note"));
 }
 
 /* ---------- anomalies ---------- */

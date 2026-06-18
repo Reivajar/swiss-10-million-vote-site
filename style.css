@@ -121,11 +121,28 @@ em{font-style:normal;border-bottom:2px solid var(--red)}
 .maprow{display:grid;grid-template-columns:1fr 300px;gap:32px;align-items:start}
 .mapfig{margin:0}
 #chmap{width:100%;height:auto;display:block;background:var(--bg)}
-.cm-path{stroke:#fff;stroke-width:.3px;cursor:pointer;transition:opacity .12s}
+.cm-path{stroke:#fff;stroke-width:.3px;cursor:pointer;transition:opacity .12s;vector-effect:non-scaling-stroke}
 .cm-path:hover{opacity:.78}
 .cm-path.is-active{stroke:var(--ink);stroke-width:1.1px}
+#chmap{touch-action:none}
+.maptools{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.maptoggle{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;user-select:none}
+.maptoggle input{width:15px;height:15px;cursor:pointer;accent-color:var(--ink)}
+.zoomctl{display:inline-flex;gap:1px;background:var(--line);border:1px solid var(--line)}
+.zoombtn{width:30px;height:30px;border:0;background:var(--bg);color:var(--ink);font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.zoombtn:hover{background:var(--line)}
+#canton-borders{fill:none;stroke:#1a1a1a;stroke-width:1.1px;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke;pointer-events:none;opacity:0;transition:opacity .15s}
+#cities{pointer-events:none;opacity:0;transition:opacity .15s}
+.city-dot{fill:#111;stroke:#fff;stroke-width:1px;vector-effect:non-scaling-stroke}
+.city-label{fill:#111;font-size:11px;font-weight:700;paint-order:stroke;stroke:#fff;stroke-width:2.4px;vector-effect:non-scaling-stroke}
+#chmap.overlay-on #canton-borders,#chmap.overlay-on #cities{opacity:1}
 .legend{margin-top:14px;display:flex;flex-direction:column;gap:8px}
 .legend__bar{height:12px;width:100%;border:1px solid var(--line)}
+.legend__bar-wrapper{display:flex;align-items:center;gap:8px;justify-content:center}
+.legend__bar-wrapper .legend__bar{flex:1}
+.legend__side-label{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+.legend__side-label--left{order:-1;text-align:right}
+.legend__side-label--right{order:1;text-align:left}
 .legend__scale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
 .legend__title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
 
@@ -158,7 +175,7 @@ em{font-style:normal;border-bottom:2px solid var(--red)}
 .ftrack__zero{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--ink);left:50%}
 .fbar{position:absolute;display:block;top:4px;height:14px;background:var(--pos)}
 .fbar--neg{background:var(--neg)}
-.fval{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;font-size:15px}
+.fval{text-align:left;font-weight:700;font-variant-numeric:tabular-nums;font-size:15px}
 .fsig{color:var(--faint);font-weight:500;font-size:12px;margin-left:4px}
 .fexp{max-height:0;overflow:hidden;transition:max-height .28s ease}
 .fexp.open{max-height:340px}
@@ -203,8 +220,9 @@ em{font-style:normal;border-bottom:2px solid var(--red)}
 .rationale__lead{font-size:16.5px;line-height:1.55;max-width:74ch;margin:0 0 26px;color:var(--ink)}
 .modelspec{border:1px solid var(--line);background:var(--alt);padding:26px 28px}
 .modelspec__h{text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:700;color:var(--red);margin-bottom:14px}
-.formula{display:block;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:15px;
-  background:var(--ink);color:#fff;padding:14px 16px;overflow-x:auto;white-space:nowrap;margin-bottom:20px}
+.modelspec .formula{display:block;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:15px;
+  background:var(--bg);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--red);
+  padding:16px 18px;overflow-x:auto;white-space:nowrap;margin:0 0 20px}
 .modelspec__defs{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .modelspec__defs li{font-size:14.5px;line-height:1.55;padding-left:16px;border-left:2px solid var(--line);color:var(--ink)}
 .modelspec__defs li strong{color:var(--ink)}
@@ -274,8 +292,54 @@ em{font-style:normal;border-bottom:2px solid var(--red)}
 .anomtable td:first-child{font-weight:700}
 .anomtable .ac{color:var(--muted);font-size:13px}
 .anomtable td:nth-child(3),.anomtable td:nth-child(4){text-align:right;font-variant-numeric:tabular-nums}
+.anomtable th:nth-child(3),.anomtable th:nth-child(4){text-align:right}
 .anomtable .rp{color:var(--pos);font-weight:700}
 .anomtable .rn{color:var(--red);font-weight:700}
+
+/* §04 anomalies callout — make the "why" prominent */
+.anom-callout{display:flex;gap:16px;align-items:flex-start;margin-top:26px;padding:18px 20px;
+  background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--red);max-width:80ch}
+.anom-callout__mark{flex:none;width:24px;height:24px;background:var(--red);color:#fff;font-weight:700;
+  display:flex;align-items:center;justify-content:center;font-size:15px}
+.anom-callout p{margin:0;font-size:15.5px;line-height:1.55;color:var(--ink)}
+
+/* §03 forest legend — grid aligned to the forest columns (chevron|label|track|value) */
+.forestlegend{display:grid;grid-template-columns:18px 220px 1fr 70px;gap:18px;align-items:center;
+  border-top:1px solid var(--line);padding:10px 0 9px;font-size:12px;color:var(--muted)}
+.fl-track{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fl-mid{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center}
+.fl-chip{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.fl-bar{display:inline-block;width:24px;height:8px;background:var(--ink)}
+.fl-star{color:var(--ink);font-weight:700;letter-spacing:1px}
+.fl-no,.fl-yes{font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.02em;white-space:nowrap}
+.fl-no{color:var(--neg)} .fl-yes{color:var(--pos)}
+.fl-arrow{font-weight:400}
+.fl-val{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.fl-note{margin:7px 0 0;font-size:12px;color:var(--muted);line-height:1.5;max-width:78ch}
+.fl-bridge{color:var(--ink);font-size:14px;line-height:1.55;max-width:82ch;margin-top:16px}
+
+/* §06 executive summary */
+.summary{max-width:82ch}
+.sum-lead{font-size:clamp(18px,2vw,23px);line-height:1.42;margin:0 0 26px;color:var(--ink);font-weight:500;max-width:64ch}
+.sum-list{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.sum-list li{font-size:16px;line-height:1.55;padding-left:18px;border-left:3px solid var(--red);color:var(--ink)}
+.sum-list li strong{font-weight:700}
+@media (max-width:880px){.forestlegend{grid-template-columns:14px 110px 1fr 52px;gap:9px}}
+@media (max-width:560px){.forestlegend .fl-mid{display:none}}
+
+/* bento — main-idea statement (accent tile) */
+.tile--idea{justify-content:space-between}
+.idea__big{margin:auto 0 0;font-size:clamp(20px,2.4vw,30px);font-weight:700;line-height:1.08;letter-spacing:-.015em;color:#fff}
+
+/* §03 scatter plain-language reading of the correlation */
+.scatter-interp{margin:0 0 14px;font-size:15.5px;line-height:1.5;color:var(--ink);min-height:2.6em}
+.scatter-interp:empty{display:none}
+.scatter-rnote{margin:10px 0 0;font-size:12px;color:var(--muted);line-height:1.5;max-width:66ch}
+.sx-overall-label{fill:var(--ink);font-size:12px;font-weight:700}
+.adjhelp{margin:8px 0 0;font-size:12.5px;color:var(--muted);max-width:64ch}
+.r2note{margin:12px 0 0;font-size:11.5px;color:var(--faint);line-height:1.45;max-width:46ch}
+.rationale__spec{border-top:1px solid var(--hair);margin-top:18px}
+.rationale__spec .modelspec{border:none;padding:0;margin:0}
 .inlinebtn{appearance:none;background:var(--ink);color:#fff;border:none;font:inherit;font-size:13.5px;
   padding:2px 9px;cursor:pointer}
 .inlinebtn:hover{background:var(--red)}

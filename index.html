@@ -15,7 +15,7 @@
 <meta name="twitter:description" content="What correlates with the Swiss 10-million referendum Yes share, commune by commune." />
 <meta name="twitter:image" content="https://reivajar.github.io/swiss-10-million-vote-site/assets/thumb_mat.png" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-<link rel="stylesheet" href="style.css?v=20260617-1" />
+<link rel="stylesheet" href="style.css?v=20260618-7" />
 </head>
 <body>
 <a class="skip" href="#map">Skip to map</a>
@@ -31,6 +31,7 @@
       <a href="#assoc" data-i18n="nav.correlates">Correlates</a>
       <a href="#fit" data-i18n="nav.fit">Fit</a>
       <a href="#anomalies" data-i18n="nav.anomalies">Anomalies</a>
+      <a href="#summary" data-i18n="nav.summary">Summary</a>
       <a href="#sources" data-i18n="nav.data">Data</a>
     </nav>
     <div class="langsw" id="langsw" role="group" aria-label="Language"></div>
@@ -40,10 +41,10 @@
 <main id="top">
 
   <figure class="herobanner" id="infographic">
-    <img src="assets/gr_04.jpg"
-      alt="Axonometric infographic of the Swiss 10-million referendum: density gradient from dense city (No) to alpine village (Yes), a coefficient bar chart, and the headline 45.2% Yes — rejected."
+    <img src="assets/gr_05.png"
+      alt="Somewhere in Graubunden"
       onerror="this.style.display='none';this.closest('.herobanner').classList.add('is-empty')" />
-    <figcaption>Infographic — what correlates with the Yes share across 2,105 communes.</figcaption>
+    <figcaption>What correlates with the Yes share across Swiss communes.</figcaption>
   </figure>
 
   <!-- HERO -->
@@ -75,33 +76,13 @@
       <span class="tile__num">0.87<span class="u">R²</span></span>
       <span class="tile__foot" data-i18n="bento.variance_foot"></span>
     </div>
-    <div class="tile tile--accent">
+    <div class="tile tile--accent tile--idea">
       <span class="tile__label" data-i18n="bento.correlate"></span>
-      <span class="tile__num" data-i18n="bento.correlate_val"></span>
+      <p class="idea__big" data-i18n="bento.idea_big"></p>
       <span class="tile__foot" data-i18n="bento.correlate_foot"></span>
     </div>
   </section>
   <p class="wrap bento-note" data-i18n="bento.footnote"></p>
-
-  <!-- RATIONALE -->
-  <section class="section">
-    <div class="wrap rationale">
-      <div class="section__head"><h2 class="h2"><span class="idx">00</span> <span data-i18n="rationale.head"></span></h2></div>
-      <p class="rationale__lead" data-i18n="rationale.p1"></p>
-      <div class="modelspec">
-        <div class="modelspec__h" data-i18n="rationale.spec_head"></div>
-        <code class="formula" data-i18n="rationale.formula"></code>
-        <ul class="modelspec__defs">
-          <li data-i18n="rationale.def_type"></li>
-          <li data-i18n="rationale.def_outcome"></li>
-          <li data-i18n="rationale.def_weights"></li>
-          <li data-i18n="rationale.def_spatial"></li>
-          <li data-i18n="rationale.def_coef"></li>
-        </ul>
-      </div>
-      <p class="rationale__note" data-i18n="rationale.p3"></p>
-    </div>
-  </section>
 
   <!-- MAP -->
   <section id="map" class="section section--alt">
@@ -114,6 +95,17 @@
       <p class="vardesc" id="vardesc" aria-live="polite"></p>
       <div class="maprow">
         <figure class="mapfig">
+          <div class="maptools">
+            <label class="maptoggle">
+              <input type="checkbox" id="overlay-toggle">
+              <span data-i18n="map.overlay_toggle"></span>
+            </label>
+            <div class="zoomctl" role="group" aria-label="Zoom">
+              <button type="button" id="zoom-out" class="zoombtn" data-i18n-title="map.zoom_out" aria-label="Zoom out">−</button>
+              <button type="button" id="zoom-reset" class="zoombtn" data-i18n-title="map.zoom_reset" aria-label="Reset zoom">⤢</button>
+              <button type="button" id="zoom-in" class="zoombtn" data-i18n-title="map.zoom_in" aria-label="Zoom in">+</button>
+            </div>
+          </div>
           <svg id="chmap" role="img" aria-label="Choropleth map of Switzerland"></svg>
           <figcaption class="legend" id="legend"></figcaption>
         </figure>
@@ -122,14 +114,56 @@
     </div>
   </section>
 
+  <!-- METHOD / RATIONALE -->
+  <section class="section">
+    <div class="wrap rationale">
+      <div class="section__head"><h2 class="h2"><span class="idx">02</span> <span data-i18n="rationale.head"></span></h2></div>
+      <p class="rationale__lead" data-i18n="rationale.p1"></p>
+      <p class="rationale__note" data-i18n="rationale.p2"></p>
+      <p class="rationale__note" data-i18n="rationale.p3"></p>
+      <details class="disc rationale__spec">
+        <summary data-i18n="rationale.spec_head"></summary>
+        <div class="disc__body modelspec">
+          <code class="formula" data-i18n="rationale.formula"></code>
+          <ul class="modelspec__defs">
+            <li data-i18n="rationale.def_type"></li>
+            <li data-i18n="rationale.def_outcome"></li>
+            <li data-i18n="rationale.def_weights"></li>
+            <li data-i18n="rationale.def_spatial"></li>
+            <li data-i18n="rationale.def_coef"></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
   <!-- ASSOCIATIONS -->
   <section id="assoc" class="section">
     <div class="wrap">
       <div class="section__head">
-        <h2 class="h2"><span class="idx">02</span> <span data-i18n="assoc.head"></span></h2>
+        <h2 class="h2"><span class="idx">03</span> <span data-i18n="assoc.head"></span></h2>
         <p class="note" data-i18n="assoc.note"></p>
       </div>
+      <div class="forestlegend" aria-hidden="true">
+        <span class="fl-c1"></span>
+        <span class="fl-c2"></span>
+        <span class="fl-track">
+          <span class="fl-no"><span class="fl-arrow">←</span> <span data-i18n="assoc.legend_no"></span></span>
+          <span class="fl-mid">
+            <span class="fl-chip"><span class="fl-bar"></span> <span data-i18n="assoc.legend_bar"></span></span>
+            <span class="fl-chip"><span class="fl-star">***</span> <span data-i18n="assoc.legend_sig"></span></span>
+          </span>
+          <span class="fl-yes"><span data-i18n="assoc.legend_yes"></span> <span class="fl-arrow">→</span></span>
+        </span>
+        <span class="fl-val" data-i18n="assoc.legend_coef"></span>
+      </div>
+      <p class="fl-note" data-i18n="assoc.legend_note"></p>
       <div id="forest" class="forest"></div>
+      <p class="caption fl-bridge" data-i18n="assoc.effect_note"></p>
+      <details class="disc assoc-expand">
+        <summary data-i18n="assoc.technical_q"></summary>
+        <div class="disc__body" data-i18n="assoc.technical_a"></div>
+      </details>
       <p class="caption" data-i18n="assoc.caption"></p>
     </div>
   </section>
@@ -138,16 +172,19 @@
   <section id="fit" class="section section--alt">
     <div class="wrap">
       <div class="section__head">
-        <h2 class="h2"><span class="idx">03</span> <span data-i18n="fit.head"></span></h2>
+        <h2 class="h2"><span class="idx">04</span> <span data-i18n="fit.head"></span></h2>
         <p class="note" data-i18n="fit.note"></p>
       </div>
       <div class="scatterbar" id="scatterbar" role="tablist" aria-label="Scatter x-axis"></div>
       <div class="adjtoggle" id="adjtoggle" role="group" aria-label="Raw or adjusted"></div>
+      <p class="adjhelp" data-i18n="scatter.adj_help"></p>
       <div class="langtoggle" id="langtoggle" aria-label="Toggle language groups"></div>
       <div class="fitgrid">
         <figure class="scatterfig">
+          <p class="scatter-interp" id="scatter-interp"></p>
           <svg id="scatter" role="img" aria-label="Scatter of the Yes share against the selected variable"></svg>
           <figcaption class="caption" id="scatter-cap"></figcaption>
+          <p class="scatter-rnote" data-i18n="scatter.r_vs_r2"></p>
           <div class="scatter-readout" id="scatter-readout"></div>
         </figure>
         <div id="r2" class="r2"></div>
@@ -186,7 +223,7 @@
   <section id="anomalies" class="section">
     <div class="wrap">
       <div class="section__head">
-        <h2 class="h2"><span class="idx">04</span> <span data-i18n="anomalies.head"></span></h2>
+        <h2 class="h2"><span class="idx">05</span> <span data-i18n="anomalies.head"></span></h2>
         <p class="note"><span data-i18n="anomalies.note_a"></span>
           <button class="inlinebtn" id="show-resid" data-i18n="anomalies.resid_btn"></button>
           <span data-i18n="anomalies.note_b"></span></p>
@@ -201,15 +238,29 @@
           <table class="anomtable" id="anom-neg"></table>
         </div>
       </div>
-      <p class="caption" data-i18n="anomalies.caption"></p>
+      <aside class="anom-callout">
+        <span class="anom-callout__mark" aria-hidden="true">!</span>
+        <p data-i18n="anomalies.caption"></p>
+      </aside>
+      <p class="caption" data-i18n="anomalies.foot"></p>
+    </div>
+  </section>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <section id="summary" class="section section--alt">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2"><span class="idx">06</span> <span data-i18n="summary.head"></span></h2>
+      </div>
+      <div class="summary" data-i18n="summary.body"></div>
     </div>
   </section>
 
   <!-- SOURCES -->
-  <section id="sources" class="section section--alt">
+  <section id="sources" class="section">
     <div class="wrap">
       <div class="section__head">
-        <h2 class="h2"><span class="idx">05</span> <span data-i18n="sources.head"></span></h2>
+        <h2 class="h2"><span class="idx">07</span> <span data-i18n="sources.head"></span></h2>
         <p class="note" data-i18n="sources.note"></p>
       </div>
       <div id="sources-grid" class="sources"></div>
@@ -230,6 +281,6 @@
 <div id="tip" class="tip" role="status" aria-hidden="true"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-<script src="app.js?v=20260617-1"></script>
+<script src="app.js?v=20260618-7"></script>
 </body>
 </html>
